@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://bo2rfmvtkremj"]
+
+[ext_resource type="Script" uid="uid://wi44jry06p7y" path="res://scripts/objects/player.gd" id="1_b5en7"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ar08s"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_i6xri"]
+size = Vector2(34, 55)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_b5en7"]
+radius = 27.166155
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_b5en7")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_ar08s")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(7, 17.5)
+shape = SubResource("RectangleShape2D_i6xri")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position_smoothing_enabled = true
+
+[node name="AttackHitbox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackHitbox"]
+position = Vector2(6, 17)
+shape = SubResource("CircleShape2D_b5en7")

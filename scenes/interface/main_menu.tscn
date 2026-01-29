@@ -1,0 +1,44 @@
+[gd_scene load_steps=2 format=3 uid="uid://bnww4q32l1pto"]
+
+[ext_resource type="Script" uid="uid://3qydoms3o0o0" path="res://scripts/interface/main_menu.gd" id="1_uidtg"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_uidtg")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.667
+anchor_bottom = 1.667
+offset_right = -0.3840332
+offset_bottom = -0.21606445
+
+[node name="TextureRect" type="TextureRect" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.21300001
+anchor_top = 0.40100002
+anchor_right = 0.36600003
+anchor_bottom = 0.497
+offset_left = -0.65460205
+offset_top = 0.14221191
+offset_right = 0.58532715
+offset_bottom = 0.4621582
+theme_override_font_sizes/font_size = 37
+text = "Play"
+
+[connection signal="pressed" from="Panel/Button" to="." method="_on_button_pressed"]
