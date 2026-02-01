@@ -44,8 +44,23 @@ static func create_button_pressed_style() -> StyleBoxFlat:
 	return style
 
 static func style_button(button: Button):
-	button.add_theme_stylebox_override("normal", create_button_style())
-	button.add_theme_stylebox_override("hover", create_button_hover_style())
-	button.add_theme_stylebox_override("pressed", create_button_pressed_style())
-	button.add_theme_font_size_override("font_size", 24)
+	var style_normal = StyleBoxFlat.new()
+	style_normal.bg_color = Color(0, 0, 0, 0)  # Transparente
+	style_normal.border_width_bottom = 2
+	style_normal.border_color = Color(0.3, 0.3, 0.3, 1)
+	
+	var style_hover = StyleBoxFlat.new()
+	style_hover.bg_color = Color(0.15, 0.15, 0.15, 1)
+	style_hover.border_width_bottom = 2
+	style_hover.border_color = Color.WHITE
+	
+	var style_pressed = StyleBoxFlat.new()
+	style_pressed.bg_color = Color(0.05, 0.05, 0.05, 1)
+	style_pressed.border_width_bottom = 2
+	style_pressed.border_color = Color.WHITE
+	
+	button.add_theme_stylebox_override("normal", style_normal)
+	button.add_theme_stylebox_override("hover", style_hover)
+	button.add_theme_stylebox_override("pressed", style_pressed)
+	button.add_theme_font_size_override("font_size", 28)
 	button.add_theme_color_override("font_color", Color.WHITE)

@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://bnww4q32l1pto"]
+[gd_scene load_steps=6 format=3 uid="uid://bnww4q32l1pto"]
 
 [ext_resource type="Script" uid="uid://3qydoms3o0o0" path="res://scripts/interface/main_menu.gd" id="1_uidtg"]
 [ext_resource type="Script" uid="uid://b87u0miarx5ng" path="res://scripts/interface/option_menu.gd" id="2_b5nk6"]
+[ext_resource type="Texture2D" uid="uid://q00hjxcfavlf" path="res://resources/interface/dec43476-8301-46d5-a5d2-0144df69bbc3.png" id="2_bvgs0"]
 
 [sub_resource type="Theme" id="Theme_b5nk6"]
 
@@ -27,52 +28,62 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+texture = ExtResource("2_bvgs0")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = -1.0
+offset_top = 405.0
+offset_right = 690.0
+offset_bottom = 1075.0
+color = Color(0, 0, 0, 1)
 
 [node name="Title" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.34300002
-anchor_top = 0.38000003
-anchor_right = 0.633
-anchor_bottom = 0.528
-offset_left = -0.5600586
-offset_top = -0.4000244
-offset_right = 0.64001465
-offset_bottom = -0.23999023
+anchor_left = 0.123
+anchor_top = 0.128
+anchor_right = 0.41400003
+anchor_bottom = 0.27600002
+offset_left = -0.16000366
+offset_top = -0.2400055
+offset_right = -0.8800659
+offset_bottom = -0.08001709
 text = "GAME NAME "
 label_settings = SubResource("LabelSettings_uidtg")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="MainMenuContent" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.40300003
-anchor_top = 0.52000004
-anchor_right = 0.573
-anchor_bottom = 0.83100003
-offset_left = 0.2399292
-offset_top = 0.39996338
-offset_right = -0.16003418
-offset_bottom = 0.5199585
+anchor_left = 0.208
+anchor_top = 0.532
+anchor_right = 0.37800002
+anchor_bottom = 0.84400004
+offset_left = -199.36002
+offset_top = 0.44000244
+offset_right = -199.76001
+offset_bottom = -0.52001953
+theme_override_constants/separation = 8
 alignment = 1
 
-[node name="PlayButton" type="Button" parent="VBoxContainer"]
+[node name="PlayButton" type="Button" parent="MainMenuContent"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 38
+theme_override_font_sizes/font_size = 55
 text = "Play"
 flat = true
 icon_alignment = 1
 
-[node name="OptionsButton" type="Button" parent="VBoxContainer"]
+[node name="OptionsButton" type="Button" parent="MainMenuContent"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 38
+theme_override_font_sizes/font_size = 55
 text = "Options"
 flat = true
 
-[node name="QuitButton" type="Button" parent="VBoxContainer"]
+[node name="QuitButton" type="Button" parent="MainMenuContent"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 38
+theme_override_font_sizes/font_size = 55
 text = "Quit"
 flat = true
 
@@ -82,6 +93,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("2_b5nk6")
 
 [node name="Overlay" type="ColorRect" parent="OptionsMenu"]
@@ -185,9 +198,120 @@ text = "Resolution"
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 
-[connection signal="pressed" from="VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
+[node name="SaveLoadContent" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 200.0
+offset_top = 500.0
+offset_right = 464.0
+offset_bottom = 1000.0
+theme_override_constants/separation = 7
+alignment = 1
+
+[node name="Label" type="Label" parent="SaveLoadContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "SELECT SLOT
+"
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="SaveLoadContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "SLOT 1 - EMPTY"
+flat = true
+
+[node name="Button2" type="Button" parent="SaveLoadContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "SLOT 2 - EMPTY"
+flat = true
+
+[node name="Button3" type="Button" parent="SaveLoadContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "SLOT 3 - EMPTY"
+flat = true
+
+[node name="Label2" type="Label" parent="SaveLoadContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+
+[node name="Button4" type="Button" parent="SaveLoadContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "BACK"
+flat = true
+
+[node name="OptionsContent" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 200.0
+offset_top = 500.0
+offset_right = 540.0
+offset_bottom = 973.0
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="OptionsContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "OPTIONS
+"
+horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="OptionsContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "MASTER: 100%"
+
+[node name="HSlider" type="HSlider" parent="OptionsContent"]
+layout_mode = 2
+
+[node name="Label3" type="Label" parent="OptionsContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "MUSIC: 100%"
+
+[node name="HSlider2" type="HSlider" parent="OptionsContent"]
+layout_mode = 2
+
+[node name="Label4" type="Label" parent="OptionsContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "SFX: 100%"
+
+[node name="HSlider3" type="HSlider" parent="OptionsContent"]
+layout_mode = 2
+
+[node name="CheckBox" type="CheckBox" parent="OptionsContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "FULLSCREEN"
+
+[node name="Label5" type="Label" parent="OptionsContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "RESOLUTION"
+
+[node name="OptionButton" type="OptionButton" parent="OptionsContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+
+[node name="Button" type="Button" parent="OptionsContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "APPLY"
+flat = true
+
+[node name="Button2" type="Button" parent="OptionsContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "BACK"
+flat = true
+
+[connection signal="pressed" from="MainMenuContent/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="MainMenuContent/OptionsButton" to="." method="_on_options_button_pressed"]
+[connection signal="pressed" from="MainMenuContent/QuitButton" to="." method="_on_quit_button_pressed"]
 [connection signal="pressed" from="OptionsMenu/Panel/BackButton" to="OptionsMenu" method="_on_back_button_pressed"]
 [connection signal="pressed" from="OptionsMenu/Panel/ApplyButton" to="OptionsMenu" method="_on_apply_button_pressed"]
 [connection signal="value_changed" from="OptionsMenu/Panel/VBoxContainer/AudioSection/MasterSlider" to="OptionsMenu" method="_on_master_slider_value_changed"]

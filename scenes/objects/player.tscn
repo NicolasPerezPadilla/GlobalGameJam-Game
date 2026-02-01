@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://bo2rfmvtkremj"]
+[gd_scene load_steps=44 format=3 uid="uid://bo2rfmvtkremj"]
 
 [ext_resource type="Script" uid="uid://wi44jry06p7y" path="res://scripts/objects/player.gd" id="1_b5en7"]
 [ext_resource type="Texture2D" uid="uid://dxlihwnatgmk7" path="res://resources/objects/player/idle/idle1_0001.png" id="2_g4pvk"]
@@ -17,9 +17,11 @@
 [ext_resource type="Texture2D" uid="uid://bkbn1wv58bcwe" path="res://resources/objects/player/attack/golpe2_0003.png" id="6_e30sf"]
 [ext_resource type="Texture2D" uid="uid://dypov256ppxby" path="res://resources/objects/player/idle/idle1_0005.png" id="6_xeqme"]
 [ext_resource type="Texture2D" uid="uid://ijk367m30l4n" path="res://resources/objects/player/walk/caminar_0006.png" id="7_6uaar"]
+[ext_resource type="Texture2D" uid="uid://6oeifwtkisq2" path="res://resources/objects/player/jump/caida_0001.png" id="7_e30sf"]
 [ext_resource type="Texture2D" uid="uid://cylybshk5remk" path="res://resources/objects/player/idle/idle1_0006.png" id="7_x3mv4"]
 [ext_resource type="Texture2D" uid="uid://x8r4oiqw76wl" path="res://resources/objects/player/walk/caminar_0007.png" id="8_2iaiu"]
 [ext_resource type="Texture2D" uid="uid://dck3asp32nhxx" path="res://resources/objects/player/idle/idle1_0007.png" id="8_kyf6x"]
+[ext_resource type="Texture2D" uid="uid://fefnhtbkfahp" path="res://resources/objects/player/attack/hit_0001.png" id="8_lmx3q"]
 [ext_resource type="Texture2D" uid="uid://bemn333lfyetn" path="res://resources/objects/player/idle/idle1_0008.png" id="9_6dywr"]
 [ext_resource type="Texture2D" uid="uid://ykm1x25qpra8" path="res://resources/objects/player/walk/caminar_0008.png" id="9_ae4o8"]
 [ext_resource type="Texture2D" uid="uid://lyvn03x3snkb" path="res://resources/objects/player/idle/idle2_0001.png" id="10_xeqme"]
@@ -35,7 +37,9 @@
 [ext_resource type="Texture2D" uid="uid://4ij48gu82eol" path="res://resources/objects/player/attack/patada_0001.png" id="19_lmx3q"]
 [ext_resource type="Texture2D" uid="uid://bp61avt8lt1m7" path="res://resources/objects/player/attack/patada_0002.png" id="20_u412g"]
 [ext_resource type="Texture2D" uid="uid://cnutglslk0vfc" path="res://resources/objects/player/run/correr_0007.png" id="20_yoew3"]
+[ext_resource type="Texture2D" uid="uid://cujxi8rt7ng4o" path="res://resources/objects/player/jump/salto_0001.png" id="21_u412g"]
 [ext_resource type="Texture2D" uid="uid://8bo43h6y4qi" path="res://resources/objects/player/run/correr_0008.png" id="21_vpwpc"]
+[ext_resource type="Texture2D" uid="uid://dg2uoj4vmds2t" path="res://resources/objects/player/jump/salto_0002.png" id="22_exui1"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_ar08s"]
 animations = [{
@@ -75,6 +79,22 @@ animations = [{
 "loop": true,
 "name": &"attack2",
 "speed": 14.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_e30sf")
+}],
+"loop": true,
+"name": &"fall",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_lmx3q")
+}],
+"loop": true,
+"name": &"hit",
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -121,6 +141,38 @@ animations = [{
 "loop": true,
 "name": &"idle2",
 "speed": 7.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("21_u412g")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_exui1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_exui1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_exui1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_exui1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_exui1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_exui1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_exui1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_exui1")
+}],
+"loop": true,
+"name": &"jump",
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -202,12 +254,13 @@ size = Vector2(215, 343)
 radius = 252.07141
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
+collision_mask = 9
 script = ExtResource("1_b5en7")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_ar08s")
-animation = &"kick"
-frame_progress = 0.9294074
+animation = &"jump"
+frame_progress = 0.57194734
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(1.5, 65.5)
@@ -215,10 +268,16 @@ shape = SubResource("RectangleShape2D_i6xri")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(0.5, 0.5)
+limit_left = -8293
+limit_top = -2841
+limit_right = 9005
+limit_bottom = 399
 position_smoothing_enabled = true
 position_smoothing_speed = 20.0
 
 [node name="AttackHitbox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackHitbox"]
 position = Vector2(1, 7)

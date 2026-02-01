@@ -1,21 +1,80 @@
-[gd_scene load_steps=10 format=3 uid="uid://gl0e62mb1s5l"]
+[gd_scene load_steps=35 format=3 uid="uid://gl0e62mb1s5l"]
 
 [ext_resource type="Texture2D" uid="uid://c3fy16miwrs1b" path="res://resources/game/last_scene/escenariojam.png" id="1_sa2ma"]
 [ext_resource type="PackedScene" uid="uid://bo2rfmvtkremj" path="res://scenes/objects/player.tscn" id="1_y85gv"]
 [ext_resource type="Script" uid="uid://b7vevl7nirx3s" path="res://scripts/game/enemiesFirstScene.gd" id="2_xg086"]
 [ext_resource type="Script" uid="uid://cchmadhqwhq0c" path="res://scripts/interface/hudFirstScene.gd" id="3_7gtkl"]
 [ext_resource type="PackedScene" uid="uid://dqljs6jlt2qje" path="res://scenes/objects/enemy_type_1.tscn" id="3_sa2ma"]
+[ext_resource type="Texture2D" uid="uid://cqxjlq3g1m3p6" path="res://resources/game/last_scene/bar_barra1.png" id="5_kndol"]
+[ext_resource type="Texture2D" uid="uid://bgiy4uurahdvh" path="res://resources/game/last_scene/bar_candelabro.png" id="6_ppuvv"]
+[ext_resource type="Texture2D" uid="uid://ba4dkbtnabdu7" path="res://resources/game/last_scene/bar_silla_mediana.png" id="7_wlk1h"]
+[ext_resource type="Texture2D" uid="uid://dd1is8rnx1qd1" path="res://resources/game/last_scene/bar_silla_pequeña.png" id="8_c6jcb"]
+[ext_resource type="Texture2D" uid="uid://cajdjd1nkl1e4" path="res://resources/game/last_scene/bar_mesa.png" id="9_1mhhf"]
+[ext_resource type="Texture2D" uid="uid://gn7i65ruj82g" path="res://resources/game/last_scene/bar_mesa_mini.png" id="10_kbp4h"]
+[ext_resource type="Script" uid="uid://dksalaryfomsc" path="res://scenes/game/puerta.gd" id="11_0qiuy"]
+[ext_resource type="Texture2D" uid="uid://bvmq3hauix5j3" path="res://resources/game/last_scene/bar_pilar.png" id="11_rs1fj"]
+[ext_resource type="Texture2D" uid="uid://cg7358okkt53g" path="res://resources/game/last_scene/bar_mesota.png" id="12_1mhhf"]
+[ext_resource type="Texture2D" uid="uid://dv0dlt4hmkxpt" path="res://resources/game/last_scene/bar_mesa_con_sillitas.png" id="13_kbp4h"]
+[ext_resource type="Texture2D" uid="uid://cpkkwj7ti7hed" path="res://resources/game/last_scene/bar_mesa_con_comida.png" id="14_rs1fj"]
+[ext_resource type="Texture2D" uid="uid://c44igg5lsesif" path="res://resources/game/last_scene/bar_puerta.png" id="15_0qiuy"]
+[ext_resource type="PackedScene" uid="uid://bsrwmm4riyq0s" path="res://scenes/objects/enemy_type_2.tscn" id="16_8pyda"]
+[ext_resource type="PackedScene" uid="uid://cjjc0wp2c5v7v" path="res://scenes/objects/enemy_type_3.tscn" id="17_28lrt"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3pfse"]
-size = Vector2(16281, 3402)
+size = Vector2(9812, 3331)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_xg086"]
-size = Vector2(260.5, 363)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0qiuy"]
+size = Vector2(1187, 403)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_y85gv"]
-size = Vector2(911.5, 987.75)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8pyda"]
+size = Vector2(398, 257)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_sa2ma"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_28lrt"]
+size = Vector2(820, 838)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3aj55"]
+size = Vector2(318, 588)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_x2arg"]
+size = Vector2(1578, 275.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rdukn"]
+size = Vector2(718.5, 35)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cdiny"]
+size = Vector2(3284, 119)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0sie5"]
+size = Vector2(856, 255)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_13hu0"]
+size = Vector2(1354, 683)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_u8dt4"]
+size = Vector2(468.5, 874.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1mdwf"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_biv8r"]
+size = Vector2(347, 3221.75)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gurvk"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b8qs6"]
+bg_color = Color(0.061131455, 0.061131455, 0.061131455, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [node name="FirstScene" type="Node2D"]
 
@@ -27,66 +86,317 @@ offset_bottom = -1761.0
 scale = Vector2(3, 3)
 texture = ExtResource("1_sa2ma")
 
-[node name="Entities" type="Node2D" parent="."]
-
-[node name="Player" parent="Entities" instance=ExtResource("1_y85gv")]
-position = Vector2(-599, -135)
-
-[node name="EnemiesFirstScene" type="Node2D" parent="Entities"]
-script = ExtResource("2_xg086")
-enemy_scene = ExtResource("3_sa2ma")
-max_enemies = 20
-
 [node name="Scenery" type="Node2D" parent="."]
 
 [node name="Floor" type="StaticBody2D" parent="Scenery"]
+collision_layer = 8
+collision_mask = 0
 
 [node name="FloorHitbox" type="CollisionShape2D" parent="Scenery/Floor"]
-position = Vector2(519.5, 1813)
+position = Vector2(4731, 1889.5)
 shape = SubResource("RectangleShape2D_3pfse")
 
-[node name="Structure" type="StaticBody2D" parent="Scenery"]
+[node name="BarraEsquina" type="StaticBody2D" parent="Scenery"]
+position = Vector2(-7755, -667)
+collision_layer = 8
+collision_mask = 0
 
-[node name="StructureHitbox" type="CollisionShape2D" parent="Scenery/Structure"]
-position = Vector2(15, -645.5)
-shape = SubResource("RectangleShape2D_xg086")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/BarraEsquina"]
+position = Vector2(59.5, 3.5)
+shape = SubResource("RectangleShape2D_0qiuy")
+
+[node name="Sprite2D" type="Sprite2D" parent="Scenery/BarraEsquina"]
+position = Vector2(128, 110)
+scale = Vector2(3, 3)
+texture = ExtResource("5_kndol")
+
+[node name="Candelabro" type="StaticBody2D" parent="Scenery"]
+position = Vector2(-6266, -2434)
+collision_layer = 8
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/Candelabro"]
+position = Vector2(121, 427.5)
+shape = SubResource("RectangleShape2D_8pyda")
+
+[node name="Sprite2D" type="Sprite2D" parent="Scenery/Candelabro"]
+position = Vector2(135, 263)
+scale = Vector2(3, 3)
+texture = ExtResource("6_ppuvv")
+
+[node name="SillaMediana" type="StaticBody2D" parent="Scenery"]
+position = Vector2(-5000, 0)
+collision_layer = 8
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/SillaMediana"]
+position = Vector2(-292, -429)
+shape = SubResource("RectangleShape2D_28lrt")
+
+[node name="Sprite2D" type="Sprite2D" parent="Scenery/SillaMediana"]
+position = Vector2(-263, -397)
+scale = Vector2(3, 3)
+texture = ExtResource("7_wlk1h")
+
+[node name="SillaPequeña" type="StaticBody2D" parent="Scenery"]
+collision_layer = 8
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/SillaPequeña"]
+position = Vector2(-6059, -371)
+shape = SubResource("RectangleShape2D_3aj55")
+
+[node name="Sprite2D" type="Sprite2D" parent="Scenery/SillaPequeña"]
+position = Vector2(-6050, -410)
+scale = Vector2(3, 3)
+texture = ExtResource("8_c6jcb")
+
+[node name="SillaPequeña2" type="StaticBody2D" parent="Scenery"]
+collision_layer = 8
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/SillaPequeña2"]
+position = Vector2(-5582, -193)
+shape = SubResource("RectangleShape2D_3aj55")
+
+[node name="Sprite2D" type="Sprite2D" parent="Scenery/SillaPequeña2"]
+position = Vector2(-5573, -233)
+scale = Vector2(3, 3)
+texture = ExtResource("8_c6jcb")
+
+[node name="SillaPequeña3" type="StaticBody2D" parent="Scenery"]
+collision_layer = 8
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/SillaPequeña3"]
+position = Vector2(-4921, -224)
+shape = SubResource("RectangleShape2D_3aj55")
+
+[node name="Sprite2D" type="Sprite2D" parent="Scenery/SillaPequeña3"]
+position = Vector2(-4906, -251)
+scale = Vector2(3, 3)
+texture = ExtResource("8_c6jcb")
+
+[node name="SillaPequeña4" type="StaticBody2D" parent="Scenery"]
+collision_layer = 8
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/SillaPequeña4"]
+position = Vector2(-4402, -402)
+shape = SubResource("RectangleShape2D_3aj55")
+
+[node name="Sprite2D" type="Sprite2D" parent="Scenery/SillaPequeña4"]
+position = Vector2(-4380, -447)
+scale = Vector2(3, 3)
+texture = ExtResource("8_c6jcb")
+
+[node name="Mesa" type="StaticBody2D" parent="Scenery"]
+position = Vector2(-2000, 0)
+collision_layer = 8
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/Mesa"]
+position = Vector2(-1037, -710.75)
+shape = SubResource("RectangleShape2D_x2arg")
+
+[node name="Sprite2D" type="Sprite2D" parent="Scenery/Mesa"]
+position = Vector2(-1040, -441.00003)
+scale = Vector2(3, 3)
+texture = ExtResource("9_1mhhf")
+
+[node name="MesaMini" type="StaticBody2D" parent="Scenery"]
+collision_layer = 8
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/MesaMini"]
+position = Vector2(-1498.25, -650.5)
+shape = SubResource("RectangleShape2D_rdukn")
+
+[node name="Sprite2D" type="Sprite2D" parent="Scenery/MesaMini"]
+position = Vector2(-1432, -612)
+scale = Vector2(3, 3)
+texture = ExtResource("10_kbp4h")
+
+[node name="Mesota" type="StaticBody2D" parent="Scenery"]
+collision_layer = 8
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/Mesota"]
+position = Vector2(3482, -648.5)
+shape = SubResource("RectangleShape2D_cdiny")
+
+[node name="Sprite2D" type="Sprite2D" parent="Scenery/Mesota"]
+position = Vector2(3521.0002, -293)
+scale = Vector2(3, 3)
+texture = ExtResource("12_1mhhf")
+
+[node name="MesaConSillitas" type="StaticBody2D" parent="Scenery"]
+collision_layer = 8
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/MesaConSillitas"]
+position = Vector2(5796, -473.5)
+shape = SubResource("RectangleShape2D_0sie5")
+
+[node name="Sprite2D" type="Sprite2D" parent="Scenery/MesaConSillitas"]
+position = Vector2(5916, -368)
+scale = Vector2(3, 3)
+texture = ExtResource("13_kbp4h")
+
+[node name="MesaConPlatos" type="StaticBody2D" parent="Scenery"]
+collision_layer = 8
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/MesaConPlatos"]
+position = Vector2(8305, 49.5)
+shape = SubResource("RectangleShape2D_13hu0")
+
+[node name="Sprite2D" type="Sprite2D" parent="Scenery/MesaConPlatos"]
+position = Vector2(8267, -205)
+scale = Vector2(3, 3)
+texture = ExtResource("14_rs1fj")
+
+[node name="Floor2" type="StaticBody2D" parent="Scenery"]
+collision_layer = 8
+collision_mask = 0
+
+[node name="FloorHitbox" type="CollisionShape2D" parent="Scenery/Floor2"]
+position = Vector2(-4609, 1523)
+shape = SubResource("RectangleShape2D_3pfse")
+
+[node name="Puerta" type="StaticBody2D" parent="Scenery"]
+script = ExtResource("11_0qiuy")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/Puerta"]
+position = Vector2(6854.75, -999.75)
+shape = SubResource("RectangleShape2D_u8dt4")
+
+[node name="Sprite2D" type="Sprite2D" parent="Scenery/Puerta"]
+position = Vector2(6837, -1008)
+scale = Vector2(3, 3)
+texture = ExtResource("15_0qiuy")
+
+[node name="Area2D" type="Area2D" parent="Scenery/Puerta"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/Puerta/Area2D"]
+shape = SubResource("RectangleShape2D_1mdwf")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="Scenery"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/StaticBody2D"]
-position = Vector2(1385, -379)
-shape = SubResource("RectangleShape2D_y85gv")
+position = Vector2(-8472, -1509.25)
+shape = SubResource("RectangleShape2D_biv8r")
 
-[node name="AnimatableBody2D" type="AnimatableBody2D" parent="Scenery"]
-position = Vector2(-6172, -319)
+[node name="StaticBody2D2" type="StaticBody2D" parent="Scenery"]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/AnimatableBody2D"]
-position = Vector2(1, 19)
-shape = SubResource("RectangleShape2D_sa2ma")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/StaticBody2D2"]
+position = Vector2(9178, -1371)
+shape = SubResource("RectangleShape2D_biv8r")
+
+[node name="Entities" type="Node2D" parent="."]
+
+[node name="Player" parent="Entities" instance=ExtResource("1_y85gv")]
+position = Vector2(-8032, -1132)
+
+[node name="EnemiesFirstScene" type="Node2D" parent="Entities"]
+script = ExtResource("2_xg086")
+enemy_scenes = Array[PackedScene]([ExtResource("3_sa2ma"), ExtResource("16_8pyda"), ExtResource("17_28lrt")])
+max_enemies = 20
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-282, -1224)
+scale = Vector2(3, 3)
+texture = ExtResource("11_rs1fj")
 
 [node name="HUD" type="CanvasLayer" parent="."]
 script = ExtResource("3_7gtkl")
 
-[node name="ComboLabel" type="Label" parent="HUD"]
-anchors_preset = -1
-anchor_left = 0.397
-anchor_top = -0.41000003
-anchor_right = 0.51500005
-anchor_bottom = -0.35200003
-offset_left = -0.24005127
-offset_top = -0.19998169
-offset_right = 0.19989014
-offset_bottom = 0.16003418
-theme_override_font_sizes/font_size = 45
-text = "COMBO"
+[node name="ComboContainer" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -2170.0
+offset_top = 50.0
+offset_right = -1970.0
+offset_bottom = 200.0
+grow_horizontal = 0
+pivot_offset = Vector2(100, 75)
 
-[node name="HealthBar" type="ProgressBar" parent="HUD"]
+[node name="ComboLabel" type="Label" parent="HUD/ComboContainer"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.42000002
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 32
+text = "COMBO"
+horizontal_alignment = 1
+
+[node name="ComboMultiplier" type="Label" parent="HUD/ComboContainer"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.293
+anchor_right = 0.99500006
+anchor_bottom = 0.89300007
+offset_left = -1.0
+offset_top = 0.049999237
+offset_right = -1.5258789e-05
+offset_bottom = 0.049987793
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 64
+text = "x0"
+horizontal_alignment = 1
+
+[node name="HealthContainer" type="Control" parent="HUD"]
+layout_mode = 3
+anchor_left = 0.016
+anchor_top = 0.028
+anchor_right = 0.172
+anchor_bottom = 0.102000006
+offset_left = -0.7200012
+offset_top = -0.24000168
+offset_right = -0.24002075
+offset_bottom = -0.16000366
+
+[node name="HealthBG" type="Panel" parent="HUD/HealthContainer"]
+layout_mode = 0
+offset_right = 295.0
+offset_bottom = 46.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_gurvk")
+
+[node name="HealthBar" type="ProgressBar" parent="HUD/HealthContainer"]
+layout_mode = 1
 anchors_preset = -1
 anchor_left = -0.39600003
 anchor_top = -0.39800003
 anchor_right = -0.142
 anchor_bottom = -0.358
-offset_left = 0.32006836
-offset_top = -0.15997314
-offset_right = 0.64001465
-offset_bottom = -0.35998535
+offset_left = 128.80002
+offset_top = 41.840004
+offset_right = 332.6
+offset_bottom = 68.64
+theme_override_styles/background = SubResource("StyleBoxFlat_b8qs6")
+value = 100.0
+show_percentage = false
+
+[node name="KillsContainer" type="Control" parent="HUD"]
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = -1160.0
+offset_right = 330.0
+offset_bottom = -1110.0
+grow_vertical = 0
+
+[node name="KillsLabel" type="Label" parent="HUD/KillsContainer"]
+layout_mode = 0
+offset_right = 300.0
+offset_bottom = 50.0
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 24
+text = "KILLS: 0/30"

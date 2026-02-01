@@ -1,51 +1,49 @@
 extends CharacterBody2D
 
 # Velocidades y aceleración
-var SPEED = 560
-var MAX_RUN_SPEED = 1000.0
-var ACCELERATION = 3200
+var SPEED = 600
+var MAX_RUN_SPEED = 1000
+var ACCELERATION = 2800.0
 var AIR_ACCELERATION = 2200.0
-var FRICTION = 2700
-var AIR_RESISTANCE = 1200
+var FRICTION = 2200.0
+var AIR_RESISTANCE = 1000.0
 
 # Salto
-var JUMP_STRENGTH = -600.0
+var JUMP_STRENGTH = -1020.0
 var coyote_time = 0.15
 var coyote_timer = 0.0
 var jump_buffer_time = 0.1
 var jump_buffer_timer = 0.0
 
-# Wall mechanics
-var WALL_SLIDE_SPEED = 700.0
-var WALL_JUMP_X_FORCE = 900.0
-var WALL_JUMP_Y_FORCE = -700.0
-var WALL_RUN_SPEED = 900.0
-
-# Estados
-var is_wall_sliding = false
-var is_wall_running = false
-var last_wall_normal = 0
+# Estados básicos
 var was_running_on_ground = false
-var just_finished_wall_run = false
 
 # Momentum boost
 var momentum_multiplier = 1.0
 var MAX_MOMENTUM = 1.5
 
-# SISTEMA DE ATAQUE MEJORADO
+# SISTEMA DE ATAQUE MEJORADO CON COMBOS
 var is_attacking = false
-var attack_duration = 0.25  # Más rápido para fluidez
-var attack_timer = 0.0
-var attack_damage = 25
-var attack_knockback = 400.0
-var can_move_while_attacking = true  # CAMBIO: Ahora SÍ puede moverse
-var attack_cooldown = 0.05  # Cooldown muy corto
-var cooldown_timer = 0.0
-var combo_count = 0
+var current_attack = 0  # 0 = ninguno, 1 = attack1, 2 = kick, 3 = attack2
+var combo_window = 0.5  # Tiempo para continuar combo
 var combo_timer = 0.0
-var combo_window = 1.5  # Tiempo para mantener combo
+var can_combo = false  # Se activa cuando puedes encadenar el siguiente golpe
 
-# HITSTOP (freeze frame al golpear)
+# Duraciones de cada ataque
+var attack1_duration = 0.3
+var kick_duration = 0.35
+var attack2_duration = 0.4
+
+var attack_timer = 0.0
+var attack_damage_base = 25
+var attack_cooldown = 0.1
+var cooldown_timer = 0.0
+
+# Ataque aéreo
+var air_attack_slam_force = 800.0  # Fuerza de caída al atacar en aire
+var is_air_attacking = false
+
+# HITSTOP (freeze frame)
 var hitstop_duration = 0.0
 var hitstop_timer = 0.0
 
@@ -60,19 +58,29 @@ var invulnerability_timer = 0.0
 var camera_shake_amount = 0.0
 var camera_shake_decay = 5.0
 
-var last_attack: String = "attack1"
+# IDLE ANIMATIONS
+var idle_timer = 0.0
+var idle_variation_time = 5.0  # Cada 5 segundos puede hacer idle2
+var can_do_idle2 = false
 
 # Referencias
 @onready var attack_hitbox: Area2D = $AttackHitbox
 @onready var attack_collision: CollisionShape2D = $AttackHitbox/CollisionShape2D
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var camera: Camera2D = $Camera2D
-var original_camera_position: Vector2
 
-# Lista para evitar golpear al mismo enemigo varias veces en un ataque
+var original_camera_position: Vector2
 var enemies_hit_this_attack = []
 
+# Combo tracking
+var total_combo_count = 0
+var combo_reset_timer = 0.0
+var combo_reset_time = 1.5
+
 func _ready():
+	#collision_layer = 1  # Layer del player
+	#collision_mask = 4  # Solo colisiona con el mundo (suelo/paredes)
+	
 	if attack_collision:
 		attack_collision.disabled = true
 	
@@ -88,10 +96,10 @@ func _ready():
 	current_health = max_health
 
 func _physics_process(delta: float) -> void:
-	# HITSTOP - Congela el juego brevemente
+	# HITSTOP
 	if hitstop_timer > 0:
 		hitstop_timer -= delta
-		return  # No procesar nada durante hitstop
+		return
 	
 	# Timers
 	if coyote_timer > 0:
@@ -102,12 +110,13 @@ func _physics_process(delta: float) -> void:
 		cooldown_timer -= delta
 	if combo_timer > 0:
 		combo_timer -= delta
+	if combo_reset_timer > 0:
+		combo_reset_timer -= delta
 	else:
-		combo_count = 0  # Reset combo si se acaba el tiempo
+		total_combo_count = 0
 	
 	if invulnerability_timer > 0:
 		invulnerability_timer -= delta
-		# Flash effect
 		if animated_sprite:
 			animated_sprite.modulate.a = 0.5 if int(invulnerability_timer * 20) % 2 == 0 else 1.0
 	else:
@@ -115,35 +124,38 @@ func _physics_process(delta: float) -> void:
 		if animated_sprite:
 			animated_sprite.modulate.a = 1.0
 	
+	# Idle timer para variaciones
+	if is_on_floor() and abs(velocity.x) < 10 and not is_attacking:
+		idle_timer += delta
+		if idle_timer >= idle_variation_time:
+			can_do_idle2 = true
+	else:
+		idle_timer = 0.0
+		can_do_idle2 = false
+	
 	var was_on_floor = is_on_floor()
-	var was_wall_running_before = is_wall_running
+	
+	# Gravedad
+	handle_gravity(delta)
+	
+	# Ataque aéreo - caída rápida
+	if is_air_attacking and not is_on_floor():
+		velocity.y += air_attack_slam_force * delta
 	
 	# Manejar ataque
 	handle_attack(delta)
 	
-	# Gravedad y mecánicas de pared
-	handle_gravity(delta)
-	
-	# Movimiento (ahora permitido durante ataque)
+	# Movimiento
 	handle_movement(delta)
 	
+	# Salto
 	handle_jump()
-	handle_wall_mechanics(delta)
 	
 	# Actualizar animaciones
 	update_animations()
 	
 	# Camera shake
 	handle_camera_shake(delta)
-	
-	# Detectar cuando termina el wall run
-	if was_wall_running_before and not is_wall_running and not is_on_wall():
-		if velocity.y < 0:
-			velocity.y = 0
-		just_finished_wall_run = true
-	
-	if just_finished_wall_run and is_on_floor():
-		just_finished_wall_run = false
 	
 	# Coyote time
 	if was_on_floor and not is_on_floor() and velocity.y >= 0:
@@ -154,57 +166,125 @@ func _physics_process(delta: float) -> void:
 		var speed_ratio = abs(velocity.x) / MAX_RUN_SPEED
 		momentum_multiplier = lerpf(1.0, MAX_MOMENTUM, speed_ratio)
 		was_running_on_ground = Input.is_action_pressed("RUN")
-	
-	if is_on_floor() or is_on_wall():
-		was_running_on_ground = Input.is_action_pressed("RUN")
+		
+		# Resetear ataque aéreo al tocar suelo
+		if is_air_attacking:
+			is_air_attacking = false
 	
 	move_and_slide()
 
+func handle_gravity(delta: float) -> void:
+	if is_on_floor():
+		return
+	
+	# Gravedad normal con control en caída
+	if velocity.y > 0:
+		velocity += get_gravity() * delta * 1.2
+	else:
+		velocity += get_gravity() * delta
+
 func handle_attack(delta: float) -> void:
-	# CANCELACIÓN DE ATAQUE - puedes atacar de nuevo antes de terminar
+	# Manejar input de ataque
 	if Input.is_action_just_pressed("ATTACK") and cooldown_timer <= 0:
-		start_attack()
+		if is_on_floor():
+			# Ataque en suelo - sistema de combos
+			if not is_attacking:
+				# Iniciar combo
+				start_ground_attack(1)
+			elif can_combo and current_attack < 3:
+				# Continuar combo
+				start_ground_attack(current_attack + 1)
+		else:
+			# Ataque aéreo
+			if not is_attacking:
+				start_air_attack()
 	
 	# Manejar duración del ataque
 	if is_attacking:
 		attack_timer -= delta
+		
+		# A mitad de la animación, permitir combo
+		var attack_duration = get_current_attack_duration()
+		if attack_timer <= attack_duration * 0.4 and not can_combo:
+			can_combo = true
+		
 		if attack_timer <= 0:
 			end_attack()
 
-func start_attack() -> void:
-	# Cancelar ataque anterior si existe
-	if is_attacking:
-		end_attack()
+func get_current_attack_duration() -> float:
+	match current_attack:
+		1: return attack1_duration
+		2: return kick_duration
+		3: return attack2_duration
+		_: return 0.3
+
+func start_ground_attack(attack_number: int) -> void:
+	if is_attacking and not can_combo:
+		return
+	
+	# Si estamos en un combo, no reiniciar todo
+	if not is_attacking:
+		enemies_hit_this_attack.clear()
 	
 	is_attacking = true
-	attack_timer = attack_duration
+	current_attack = attack_number
+	can_combo = false
+	combo_timer = combo_window
+	
+	# Configurar duración
+	attack_timer = get_current_attack_duration()
+	
+	# Activar hitbox
+	if attack_collision:
+		attack_collision.disabled = false
+	
+	# Reproducir animación
+	if animated_sprite:
+		match attack_number:
+			1:
+				animated_sprite.play("attack1")
+			2:
+				animated_sprite.play("kick")
+			3:
+				animated_sprite.play("attack2")
+	
+	# Impulso según el ataque
+	var impulse = 100.0
+	if attack_number == 3:
+		impulse = 150.0  # Más impulso en el golpe final
+	
+	if animated_sprite:
+		if animated_sprite.flip_h:
+			velocity.x = -impulse
+		else:
+			velocity.x = impulse
+
+func start_air_attack() -> void:
+	is_attacking = true
+	is_air_attacking = true
+	current_attack = 3  # Usar attack2 en el aire
+	attack_timer = attack2_duration * 0.7  # Reducir duración en aire
 	enemies_hit_this_attack.clear()
 	
 	# Activar hitbox
 	if attack_collision:
 		attack_collision.disabled = false
 	
-	# Reproducir animación de ataque
+	# Animación
 	if animated_sprite:
-		if last_attack == "attack1":
-			animated_sprite.play("kick")
-			last_attack = "kick"
-		elif last_attack == "kick":
-			animated_sprite.play("attack2")
-			last_attack = "attack2"
-		elif last_attack == "attack2":
-			animated_sprite.play("attack1")
-			last_attack = "attack1"
+		animated_sprite.play("attack2")
 	
-	# Impulso al atacar (mantiene momentum)
-	var attack_impulse = 150.0
-	if animated_sprite and animated_sprite.flip_h:
-		velocity.x = -attack_impulse
-	else:
-		velocity.x = attack_impulse
+	# Impulso hacia abajo
+	velocity.y = 200  # Empezar caída
 
 func end_attack() -> void:
 	is_attacking = false
+	can_combo = false
+	
+	# Solo resetear combo si se acabó el tiempo
+	if combo_timer <= 0:
+		current_attack = 0
+	
 	cooldown_timer = attack_cooldown
 	
 	# Desactivar hitbox
@@ -212,44 +292,62 @@ func end_attack() -> void:
 		attack_collision.disabled = true
 
 func _on_animation_finished() -> void:
-	if animated_sprite and animated_sprite.animation == "attack":
-		# No hacer end_attack aquí, dejar que el timer lo maneje
-		pass
+	if animated_sprite:
+		# Idle2 vuelve a idle1
+		if animated_sprite.animation == "idle2":
+			animated_sprite.play("idle1")
+			can_do_idle2 = false
+			idle_timer = 0.0
 
 func _on_attack_hit(body: Node2D) -> void:
-	# Evitar golpear al mismo enemigo varias veces
 	if body == self:
 		return
-		
+	
 	if body in enemies_hit_this_attack:
 		return
 	
 	enemies_hit_this_attack.append(body)
 	
 	if body.has_method("take_damage"):
+		# Determinar potencia del golpe
+		var hit_power = 1.0
+		var shake_amount = 8.0
+		var hitstop_time = 0.05
+		
+		if current_attack == 3:
+			# Golpe final más poderoso
+			hit_power = 2.0
+			shake_amount = 20.0
+			hitstop_time = 0.1
+		
 		# HITSTOP
-		apply_hitstop(0.05)
+		apply_hitstop(hitstop_time)
 		
 		# CAMERA SHAKE
-		add_camera_shake(8.0)
+		add_camera_shake(shake_amount)
 		
 		# COMBO
-		combo_count += 1
-		combo_timer = combo_window
+		total_combo_count += 1
+		combo_reset_timer = combo_reset_time
 		
-		# Calcular daño con multiplicador de combo
-		var combo_multiplier = 1.0 + (combo_count * 0.2)
-		var total_damage = int(attack_damage * combo_multiplier)
+		# Calcular daño
+		var combo_multiplier = 1.0 + (total_combo_count * 0.2)
+		var total_damage = int(attack_damage_base * hit_power * combo_multiplier)
 		
-		# APLICAR DAÑO (sin knockback)
+		# APLICAR DAÑO
 		body.take_damage(total_damage)
+
+		# KNOCKBACK especial para attack2
+		if current_attack == 3:
+			if body.has_method("apply_knockback"):
+				var knockback_dir = (body.global_position - global_position).normalized()
+				knockback_dir.y = -0.5  # Lanzar hacia arriba
+				body.apply_knockback(knockback_dir * 600)
 		
-		# FEEDBACK
-		print("💥 GOLPE! Combo x", combo_count, " | Daño: ", total_damage)
+		print("💥 GOLPE! Ataque: ", current_attack, " | Combo total: x", total_combo_count, " | Daño: ", total_damage)
 
 func apply_hitstop(duration: float) -> void:
 	hitstop_timer = duration
-	# Opcional: hacer que todo se congele
 	Engine.time_scale = 0.1
 	await get_tree().create_timer(duration, false).timeout
 	Engine.time_scale = 1.0
@@ -262,14 +360,11 @@ func handle_camera_shake(delta: float) -> void:
 		return
 	
 	if camera_shake_amount > 0:
-		# Shake aleatorio
 		var shake_offset = Vector2(
 			randf_range(-camera_shake_amount, camera_shake_amount),
 			randf_range(-camera_shake_amount, camera_shake_amount)
 		)
 		camera.offset = shake_offset
-		
-		# Decay
 		camera_shake_amount = lerp(camera_shake_amount, 0.0, camera_shake_decay * delta)
 	else:
 		camera.offset = Vector2.ZERO
@@ -282,95 +377,73 @@ func take_damage(damage: int) -> void:
 	is_invulnerable = true
 	invulnerability_timer = invulnerability_time
 	
-	# Camera shake al recibir daño
 	add_camera_shake(12.0)
 	
-	# Resetear combo
-	combo_count = 0
-	combo_timer = 0.0
+	total_combo_count = 0
+	combo_reset_timer = 0.0
+	
+	# Reproducir animación de daño
+	if animated_sprite and not is_attacking:
+		animated_sprite.play("hit")
 	
 	print("🩸 Daño recibido! Vida: ", current_health, "/", max_health)
 	
 	if current_health <= 0:
 		die()
-		
+
 func die() -> void:
 	print("☠️ MUERTE!")
-	# Reiniciar escena o game over
 	get_tree().reload_current_scene()
 
 func update_animations() -> void:
 	if not animated_sprite:
 		return
 	
-	# Ataque tiene prioridad PERO permite cambios rápidos
-	if is_attacking and animated_sprite.animation != "attack":
+	# Ataque tiene prioridad
+	if is_attacking:
 		return
 	
-	# Flip basado en la velocidad
+	# Animación de daño
+	if animated_sprite.animation == "hit" and animated_sprite.is_playing():
+		return
+	
+	# Flip basado en velocidad
 	if velocity.x > 10:
 		animated_sprite.flip_h = false
 	elif velocity.x < -10:
 		animated_sprite.flip_h = true
 	
-	# No cambiar animación durante ataque
-	if is_attacking:
-		return
-	
 	# Seleccionar animación
 	if is_on_floor():
-		if abs(velocity.x) > 560:
-			if animated_sprite.animation != "run":
-				animated_sprite.play("run")
-		elif abs(velocity.x) <= 560 and abs(velocity.x) > 0 :
-			if animated_sprite.animation != "walk":
-				animated_sprite.play("walk")
+		if abs(velocity.x) > 10:
+			# Determinar si camina o corre
+			if Input.is_action_pressed("RUN"):
+				if animated_sprite.animation != "run":
+					animated_sprite.play("run")
+			else:
+				if animated_sprite.animation != "walk":
+					animated_sprite.play("walk")
 		else:
-			if animated_sprite.animation != "idle1":
+			# Idle con variaciones
+			if can_do_idle2 and animated_sprite.animation != "idle2":
+				animated_sprite.play("idle2")
+			elif animated_sprite.animation != "idle1" and animated_sprite.animation != "idle2":
 				animated_sprite.play("idle1")
-	#else:
-		#if is_wall_sliding:
-			#if animated_sprite.animation != "wall_slide":
-				#animated_sprite.play("wall_slide")
-		#elif is_wall_running:
-			#if animated_sprite.animation != "wall_run":
-				#animated_sprite.play("wall_run")
-		#elif velocity.y < 0:
-			#if animated_sprite.animation != "jump":
-				#animated_sprite.play("jump")
-		#else:
-			#if animated_sprite.animation != "fall":
-				#animated_sprite.play("fall")
-
-# ... (resto de funciones handle_gravity, handle_movement, etc. igual que antes)
-
-func handle_gravity(delta: float) -> void:
-	if is_on_floor():
-		return
-	
-	if is_wall_running:
-		velocity.y = -WALL_RUN_SPEED
-		return
-	
-	if is_wall_sliding:
-		velocity.y = min(velocity.y + get_gravity().y * delta, WALL_SLIDE_SPEED)
-		return
-	
-	if just_finished_wall_run:
-		velocity += get_gravity() * delta * 1.5
-		return
-	
-	if velocity.y > 0:
-		velocity += get_gravity() * delta * 1.2
 	else:
-		velocity += get_gravity() * delta
+		# En el aire
+		if velocity.y < 0:
+			if animated_sprite.animation != "jump":
+				animated_sprite.play("jump")
+		else:
+			if animated_sprite.animation != "fall":
+				animated_sprite.play("fall")
 
 func handle_movement(delta: float) -> void:
 	var direction := Input.get_axis("LEFT", "RIGHT")
 	var target_speed = SPEED
 	
 	var can_run = Input.is_action_pressed("RUN")
-	if not is_on_floor() and not is_on_wall():
+	if not is_on_floor():
 		if can_run and not was_running_on_ground:
 			can_run = false
 	
@@ -380,56 +453,18 @@ func handle_movement(delta: float) -> void:
 	if direction != 0:
 		var accel = ACCELERATION if is_on_floor() else AIR_ACCELERATION
 		velocity.x = move_toward(velocity.x, direction * target_speed, accel * delta)
-		
-		if is_on_wall_only() and Input.is_action_pressed("RUN"):
-			var wall_normal = get_wall_normal()
-			if sign(direction) != sign(wall_normal.x):
-				is_wall_running = true
-				last_wall_normal = wall_normal.x
-				just_finished_wall_run = false
-			else:
-				is_wall_running = false
-		else:
-			is_wall_running = false
 	else:
 		var friction = FRICTION if is_on_floor() else AIR_RESISTANCE
 		velocity.x = move_toward(velocity.x, 0, friction * delta)
-		is_wall_running = false
 
 func handle_jump() -> void:
 	if Input.is_action_just_pressed("JUMP"):
 		jump_buffer_timer = jump_buffer_time
 	
-	if jump_buffer_timer > 0 and (is_on_wall_only() or is_wall_running):
-		var wall_normal = get_wall_normal()
-		velocity.x = wall_normal.x * WALL_JUMP_X_FORCE
-		velocity.y = WALL_JUMP_Y_FORCE
-		is_wall_sliding = false
-		is_wall_running = false
-		jump_buffer_timer = 0
-		momentum_multiplier = clamp(momentum_multiplier, 1.0, MAX_MOMENTUM)
-		was_running_on_ground = true
-		just_finished_wall_run = false
-		return
-	
 	if jump_buffer_timer > 0 and (is_on_floor() or coyote_timer > 0):
 		velocity.y = JUMP_STRENGTH
 		jump_buffer_timer = 0
 		coyote_timer = 0
-		is_wall_running = false
 		if abs(velocity.x) > MAX_RUN_SPEED * 0.9:
 			velocity.x *= 1.05
 		return
-
-func handle_wall_mechanics(delta: float) -> void:
-	if not is_on_wall() or is_on_floor():
-		is_wall_sliding = false
-		is_wall_running = false
-		return
-	
-	if not is_wall_running:
-		if velocity.y > 0:
-			is_wall_sliding = true
-			last_wall_normal = get_wall_normal().x
-		else:
-			is_wall_sliding = false

@@ -17,6 +17,8 @@ config/features=PackedStringArray("4.5", "Forward Plus")
 [autoload]
 
 SettingsManager="*res://scripts/interface/settings_manager.gd"
+MenuStyler="*res://scripts/interface/styles/menu_styler.gd"
+SaveManager="*res://scripts/interface/save_manager.gd"
 
 [display]
 
@@ -26,6 +28,10 @@ window/size/window_width_override=1280
 window/size/window_height_override=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+
+[gui]
+
+theme/custom_font="uid://bcplkqr8ocvry"
 
 [input]
 
@@ -59,6 +65,12 @@ ATTACK={
 "events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":0,"position":Vector2(0, 0),"global_position":Vector2(0, 0),"factor":1.0,"button_index":1,"canceled":false,"pressed":false,"double_click":false,"script":null)
 ]
 }
+
+[layer_names]
+
+2d_render/layer_1="Player"
+2d_render/layer_2="Enemy"
+2d_render/layer_4="World"
 
 [rendering]
 
