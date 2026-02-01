@@ -1,55 +1,60 @@
 extends StaticBody2D
 
-@export var is_active = false
+# Referencias opcionales
+var hit_area: Area2D = null
+var sprite: Sprite2D = null
+var collision_shape: CollisionShape2D = null
 
-@onready var sprite = $Sprite2D  # Tu sprite de puerta
-@onready var hit_area = $HitArea  # Area2D para detectar golpes
+var is_active = false
 
 func _ready():
-	add_to_group("exit_door")
+	# Buscar nodos de forma segura
+	hit_area = get_node_or_null("HitArea")
+	sprite = get_node_or_null("Sprite2D")
+	collision_shape = get_node_or_null("CollisionShape2D")
 	
+	# Debug - ver qué nodos se encontraron
 	if hit_area:
-		hit_area.body_entered.connect(_on_hit)
+		print("✅ Puerta: HitArea encontrada")
+		hit_area.body_entered.connect(_on_player_entered)
+	else:
+		push_warning("⚠️ Puerta: No se encontró HitArea - La puerta no detectará al jugador")
 	
-	# Visual de puerta bloqueada
 	if sprite:
-		sprite.modulate = Color(0.5, 0.5, 0.5)  # Gris = bloqueada
+		print("✅ Puerta: Sprite2D encontrado")
+	else:
+		push_warning("⚠️ Puerta: No se encontró Sprite2D")
+	
+	if collision_shape:
+		print("✅ Puerta: CollisionShape2D encontrado")
+	else:
+		push_warning("⚠️ Puerta: No se encontró CollisionShape2D")
+	
+	# Desactivar al inicio
+	deactivate()
 
 func activate() -> void:
 	is_active = true
-	print("🚪 ¡Puerta activada!")
 	
-	# Visual de puerta desbloqueada
+	# Cambiar apariencia
 	if sprite:
-		sprite.modulate = Color.WHITE
-		
-		# Efecto de brillo
-		var tween = create_tween().set_loops()
-		tween.tween_property(sprite, "modulate:v", 1.2, 0.5)
-		tween.tween_property(sprite, "modulate:v", 1.0, 0.5)
+		sprite.modulate = Color.GREEN
+	
+	print("🚪 Puerta ACTIVADA - Puedes pasar al siguiente nivel")
 
-func _on_hit(body: Node2D) -> void:
+func deactivate() -> void:
+	is_active = false
+	
+	# Apariencia bloqueada
+	if sprite:
+		sprite.modulate = Color.RED
+
+func _on_player_entered(body: Node2D) -> void:
 	if not is_active:
-		print("🚪 Puerta bloqueada - derrota al boss primero")
+		print("🚪 Puerta bloqueada - Derrota al boss primero")
 		return
 	
-	# Si el jugador golpea la puerta
 	if body.is_in_group("player"):
-		end_game()
-
-func end_game() -> void:
-	print("🎉 ¡JUEGO COMPLETADO!")
-	
-	# Fade out
-	var fade = ColorRect.new()
-	fade.color = Color.BLACK
-	fade.modulate.a = 0
-	fade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	get_tree().root.add_child(fade)
-	
-	var tween = create_tween()
-	tween.tween_property(fade, "modulate:a", 1.0, 2.0)
-	await tween.finished
-	
-	# Cambiar a escena de créditos o menú
-	get_tree().change_scene_to_file("res://main_menu.tscn")
+		print("🚪 Pasando al siguiente nivel...")
+		# Aquí cambias de escena
+		get_tree().change_scene_to_file("res://scenes/interface/main_menu.tscn")

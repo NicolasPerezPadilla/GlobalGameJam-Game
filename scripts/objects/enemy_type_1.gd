@@ -20,14 +20,16 @@ var fear_timer = 0.0
 
 func _ready():
 	current_health = max_health
+	# Esperar un frame antes de buscar al jugador
+	await get_tree().process_frame
 	player = get_tree().get_first_node_in_group("player")
-	
-	# IMPORTANTE: Configurar collision layer para que el player no se monte
-	#collision_layer = 2  # Layer de enemigos
-	#collision_mask = 4  # Colisiona con player (1) y mundo (4)
 
 func _physics_process(delta: float) -> void:
 	if is_dead:
+		return
+	
+	# Verificar que el enemigo está en el árbol de la escena
+	if not is_inside_tree():
 		return
 	
 	# Timers
@@ -39,7 +41,7 @@ func _physics_process(delta: float) -> void:
 		if fear_timer <= 0:
 			is_scared = false
 	
-	if player:
+	if player and is_instance_valid(player):
 		var distance_to_player = global_position.distance_to(player.global_position)
 		
 		# Comportamiento según estado
@@ -80,10 +82,12 @@ func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 	
-	move_and_slide()
+	# PROTECCIÓN: Solo llamar move_and_slide si está en el árbol
+	if is_inside_tree():
+		move_and_slide()
 
 func run_away_from_player() -> void:
-	if not player:
+	if not player or not is_instance_valid(player):
 		return
 	
 	# Huir en dirección opuesta
@@ -101,7 +105,10 @@ func run_away_from_player() -> void:
 			animated_sprite.play("run")
 
 func attack_player() -> void:
-	if player and player.has_method("take_damage"):
+	if not player or not is_instance_valid(player):
+		return
+		
+	if player.has_method("take_damage"):
 		var distance = global_position.distance_to(player.global_position)
 		if distance < attack_range:
 			player.take_damage(damage)

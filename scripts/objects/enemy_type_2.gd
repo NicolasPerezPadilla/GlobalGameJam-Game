@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
-@export var max_health = 200
-@export var move_speed = 50
+@export var max_health = 50
+@export var move_speed = 100
 @export var run_away_speed = 180.0
 @export var damage = 10
 @export var detection_range = 300.0

@@ -21,7 +21,7 @@
 [ext_resource type="PackedScene" uid="uid://cjjc0wp2c5v7v" path="res://scenes/objects/enemy_type_3.tscn" id="17_28lrt"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3pfse"]
-size = Vector2(9812, 3331)
+size = Vector2(9510, 3315.5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0qiuy"]
 size = Vector2(1187, 403)
@@ -33,19 +33,19 @@ size = Vector2(398, 257)
 size = Vector2(820, 838)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3aj55"]
-size = Vector2(318, 588)
+size = Vector2(318, 558)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_x2arg"]
 size = Vector2(1578, 275.5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rdukn"]
-size = Vector2(718.5, 35)
+size = Vector2(718.5, 15)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cdiny"]
 size = Vector2(3284, 119)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0sie5"]
-size = Vector2(856, 255)
+size = Vector2(916, 87)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_13hu0"]
 size = Vector2(1354, 683)
@@ -182,7 +182,7 @@ collision_layer = 8
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/SillaPequeña4"]
-position = Vector2(-4402, -402)
+position = Vector2(-4402, -387)
 shape = SubResource("RectangleShape2D_3aj55")
 
 [node name="Sprite2D" type="Sprite2D" parent="Scenery/SillaPequeña4"]
@@ -209,7 +209,7 @@ collision_layer = 8
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/MesaMini"]
-position = Vector2(-1498.25, -650.5)
+position = Vector2(-1498.25, -640.5)
 shape = SubResource("RectangleShape2D_rdukn")
 
 [node name="Sprite2D" type="Sprite2D" parent="Scenery/MesaMini"]
@@ -235,7 +235,7 @@ collision_layer = 8
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/MesaConSillitas"]
-position = Vector2(5796, -473.5)
+position = Vector2(5826, -557.5)
 shape = SubResource("RectangleShape2D_0sie5")
 
 [node name="Sprite2D" type="Sprite2D" parent="Scenery/MesaConSillitas"]
@@ -261,7 +261,7 @@ collision_layer = 8
 collision_mask = 0
 
 [node name="FloorHitbox" type="CollisionShape2D" parent="Scenery/Floor2"]
-position = Vector2(-4609, 1523)
+position = Vector2(-4760, 1530.75)
 shape = SubResource("RectangleShape2D_3pfse")
 
 [node name="Puerta" type="StaticBody2D" parent="Scenery"]
@@ -276,9 +276,9 @@ position = Vector2(6837, -1008)
 scale = Vector2(3, 3)
 texture = ExtResource("15_0qiuy")
 
-[node name="Area2D" type="Area2D" parent="Scenery/Puerta"]
+[node name="HitArea" type="Area2D" parent="Scenery/Puerta"]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/Puerta/Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/Puerta/HitArea"]
 shape = SubResource("RectangleShape2D_1mdwf")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="Scenery"]
@@ -298,10 +298,11 @@ shape = SubResource("RectangleShape2D_biv8r")
 [node name="Player" parent="Entities" instance=ExtResource("1_y85gv")]
 position = Vector2(-8032, -1132)
 
-[node name="EnemiesFirstScene" type="Node2D" parent="Entities"]
+[node name="EnemiesFirstScene" type="Node2D" parent="Entities" groups=["spawn"]]
 script = ExtResource("2_xg086")
 enemy_scenes = Array[PackedScene]([ExtResource("3_sa2ma"), ExtResource("16_8pyda"), ExtResource("17_28lrt")])
 max_enemies = 20
+spawn_points = Array[Vector2]([Vector2(-7682, -1116), Vector2(-7064, -488), Vector2(-6728, -455), Vector2(-5395, -1105), Vector2(-5644, -1116), Vector2(-3661, -1159), Vector2(-3271, -1148), Vector2(-2816, -1137), Vector2(-1841, -920), Vector2(-942, -422), Vector2(618, -21), Vector2(1116, -10), Vector2(1604, -10), Vector2(2081, -10), Vector2(2514, -10), Vector2(3153, -10), Vector2(3933, -21), Vector2(4691, -10), Vector2(5276, -21), Vector2(6121, -10), Vector2(6717, -10), Vector2(7790, -573), Vector2(8278, -540), Vector2(2135, -984), Vector2(2633, -984), Vector2(3261, -984), Vector2(3792, -984), Vector2(4193, -962), Vector2(4583, -962), Vector2(5569, -864)])
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-282, -1224)

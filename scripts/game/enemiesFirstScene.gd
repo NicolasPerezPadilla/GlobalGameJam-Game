@@ -3,10 +3,14 @@ extends Node2D
 @export var enemy_scenes: Array[PackedScene] = []  # ARRAY de enemigos
 @export var spawn_interval = 2.0
 @export var max_enemies = 10
+
+# PUNTOS DE SPAWN PREDEFINIDOS (edítalos desde el Inspector)
+@export var spawn_points: Array[Vector2] = []
+
+# Fallback si no hay spawn_points
+@export var use_player_radius = true  # Usar radio del jugador si no hay spawn_points
 @export var spawn_radius = 400.0
 @export var min_spawn_distance = 200.0
-@export var max_spawn_attempts = 15
-@export var ground_check_distance = 100.0  # Distancia para verificar suelo
 
 var spawn_timer = 0.0
 var current_enemies = 0
@@ -28,10 +32,18 @@ func _ready():
 	
 	if enemy_scenes.is_empty():
 		push_error("⚠️ NO HAY ESCENAS DE ENEMIGOS - Asignar en el Inspector")
+	
+	# Debug info
+	if spawn_points.is_empty():
+		print("ℹ️ No hay spawn_points definidos. Usando spawn aleatorio alrededor del jugador.")
+	else:
+		print("✅ Usando ", spawn_points.size(), " puntos de spawn:")
+		for i in range(spawn_points.size()):
+			print("   Punto ", i, ": ", spawn_points[i])
 
 func _process(delta: float) -> void:
 	if boss_spawned:
-		return  # No spawnear más enemigos si el boss ya apareció
+		return
 	
 	if enemy_scenes.is_empty() or not player:
 		return
@@ -43,51 +55,32 @@ func _process(delta: float) -> void:
 		spawn_timer = 0.0
 
 func spawn_random_enemy() -> void:
-	var valid_position = false
 	var spawn_pos = Vector2.ZERO
-	var attempts = 0
 	
-	while not valid_position and attempts < max_spawn_attempts:
-		# Generar posición aleatoria
+	# MÉTODO 1: Si hay spawn_points definidos, usar uno directamente
+	if not spawn_points.is_empty():
+		# Elegir un spawn point aleatorio
+		var random_point = spawn_points[randi() % spawn_points.size()]
+		spawn_pos = random_point
+		print("📍 Usando spawn point: ", spawn_pos)
+	
+	# MÉTODO 2: Si no hay spawn_points, usar radio alrededor del jugador
+	elif use_player_radius and player:
 		var angle = randf() * TAU
 		var distance = randf_range(min_spawn_distance, spawn_radius)
-		var test_pos = player.global_position + Vector2(cos(angle), sin(angle)) * distance
+		spawn_pos = player.global_position + Vector2(cos(angle), sin(angle)) * distance
 		
-		# SHAPE CAST para verificar que no haya obstáculos
-		var space_state = get_world_2d().direct_space_state
+		# Intentar ajustar al suelo si es posible
+		var ground_pos = try_find_ground_below(spawn_pos, 200.0)
+		if ground_pos != Vector2.ZERO:
+			spawn_pos = ground_pos
 		
-		# 1. Verificar que no haya nada en la posición de spawn (círculo de 40px)
-		var shape = CircleShape2D.new()
-		shape.radius = 40.0
-		
-		var params = PhysicsShapeQueryParameters2D.new()
-		params.shape = shape
-		params.transform = Transform2D(0, test_pos)
-		params.collision_mask = 4  # Solo mundo
-		
-		var obstacles = space_state.intersect_shape(params)
-		
-		if obstacles.is_empty():
-			# 2. Buscar suelo debajo con raycast
-			var ray_query = PhysicsRayQueryParameters2D.create(
-				test_pos,
-				test_pos + Vector2(0, ground_check_distance)
-			)
-			ray_query.collision_mask = 4
-			
-			var ground_result = space_state.intersect_ray(ray_query)
-			
-			if ground_result:
-				spawn_pos = ground_result.position + Vector2(0, -30)
-				valid_position = true
-		
-		attempts += 1
-	
-	if not valid_position:
-		print("⚠️ No se encontró posición válida")
+		print("🎲 Spawn aleatorio en: ", spawn_pos)
+	else:
+		print("❌ No hay spawn_points ni jugador - no se puede spawnear")
 		return
 	
-	# Elegir enemigo aleatorio
+	# Crear enemigo
 	var random_enemy = enemy_scenes[randi() % enemy_scenes.size()]
 	var enemy = random_enemy.instantiate()
 	enemy.global_position = spawn_pos
@@ -95,6 +88,7 @@ func spawn_random_enemy() -> void:
 	# Conectar señal de muerte
 	enemy.tree_exited.connect(_on_enemy_died)
 	
+	# Añadir a la escena
 	var enemies_node = get_node_or_null("../Enemies")
 	if enemies_node:
 		enemies_node.add_child(enemy)
@@ -102,7 +96,30 @@ func spawn_random_enemy() -> void:
 		get_parent().add_child(enemy)
 	
 	current_enemies += 1
-	print("✅ Enemigo spawneado | Total: ", current_enemies)
+	print("✅ Enemigo spawneado en: ", spawn_pos, " | Total: ", current_enemies)
+
+# Función auxiliar para intentar encontrar suelo (OPCIONAL - no bloquea el spawn)
+func try_find_ground_below(start_pos: Vector2, max_distance: float) -> Vector2:
+	var space_state = get_world_2d().direct_space_state
+	
+	if not space_state:
+		return Vector2.ZERO
+	
+	# Raycast desde arriba hacia abajo
+	var ray_start = start_pos + Vector2(0, -50)
+	var ray_end = start_pos + Vector2(0, max_distance)
+	
+	var ray_query = PhysicsRayQueryParameters2D.create(ray_start, ray_end)
+	ray_query.collision_mask = 4  # Capa del mundo/suelo
+	
+	var result = space_state.intersect_ray(ray_query)
+	
+	if result:
+		# Encontró suelo - posicionar enemigo justo encima
+		return result.position + Vector2(0, -30)
+	
+	# No encontró suelo pero no es crítico
+	return Vector2.ZERO
 
 func _on_enemy_died() -> void:
 	current_enemies -= 1
