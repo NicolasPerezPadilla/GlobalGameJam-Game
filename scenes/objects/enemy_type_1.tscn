@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://dqljs6jlt2qje"]
+
+[ext_resource type="Script" uid="uid://cmj8f2f434sgh" path="res://scripts/objects/enemy_type_1.gd" id="1_nvsv3"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_vfpp1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_h2kfi"]
+size = Vector2(192, 317)
+
+[node name="EnemyType1" type="CharacterBody2D"]
+script = ExtResource("1_nvsv3")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_vfpp1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(86, 148.5)
+shape = SubResource("RectangleShape2D_h2kfi")

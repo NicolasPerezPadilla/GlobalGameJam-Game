@@ -1,0 +1,35 @@
+[gd_scene load_steps=2 format=3 uid="uid://bhvlrkc6qhgx7"]
+
+[ext_resource type="Script" uid="uid://br7333aw2gxhw" path="res://scripts/interface/save_load_menu.gd" id="1_i6sex"]
+
+[node name="SaveLoadMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_i6sex")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 1)
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.407
+anchor_top = 0.50600004
+anchor_right = 0.537
+anchor_bottom = 0.56100005
+offset_left = -0.44000244
+offset_top = 0.5199585
+offset_right = -0.040039063
+offset_bottom = 0.11993408
+theme_override_font_sizes/font_size = 37
+text = "momentaneo"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
