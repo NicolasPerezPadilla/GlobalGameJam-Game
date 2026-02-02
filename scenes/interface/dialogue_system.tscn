@@ -1,0 +1,41 @@
+[gd_scene load_steps=3 format=3 uid="uid://10t42ic3fd4g"]
+
+[ext_resource type="Script" uid="uid://bq6xsdnvbuy5c" path="res://scripts/interface/dialogue_system.gd" id="1_l57iv"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cgtgu"]
+bg_color = Color(0.067437746, 0.06743774, 0.06743772, 1)
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+
+[node name="DialogueSystem" type="CanvasLayer"]
+script = ExtResource("1_l57iv")
+
+[node name="DialogueBox" type="Panel" parent="."]
+anchors_preset = -1
+anchor_left = 0.289
+anchor_top = 0.76600003
+anchor_right = 0.70600003
+anchor_bottom = 0.90500003
+offset_left = 0.11999512
+offset_top = -0.2800293
+offset_right = -0.52001953
+offset_bottom = -0.4000244
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_cgtgu")
+
+[node name="DialogueLabel" type="Label" parent="DialogueBox"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.104
+anchor_top = 0.347
+anchor_right = 0.882
+anchor_bottom = 0.64000005
+offset_left = -0.20000458
+offset_top = -0.049999237
+offset_right = 0.39996338
+theme_override_font_sizes/font_size = 43
+text = "FINISH THEM ALL..."
+horizontal_alignment = 1

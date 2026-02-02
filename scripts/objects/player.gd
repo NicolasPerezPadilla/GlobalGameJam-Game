@@ -95,6 +95,7 @@ func _ready():
 	
 	current_health = max_health
 
+
 func _physics_process(delta: float) -> void:
 	# HITSTOP
 	if hitstop_timer > 0:

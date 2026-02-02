@@ -6,24 +6,12 @@ var current_save_slot: int = -1
 # Ruta base de guardado
 const SAVE_PATH := "user://save_%d.json"
 
-# ====================
-# UTILIDADES
-# ====================
-
 func _get_save_path(slot: int) -> String:
 	return SAVE_PATH % slot
 
-# ====================
-# EXISTE SAVE
-# ====================
-
 func save_exists(slot: int) -> bool:
 	return FileAccess.file_exists(_get_save_path(slot))
-
-# ====================
-# CREAR SAVE NUEVO
-# ====================
-
+	
 func create_new_save(slot: int) -> void:
 	var data = {
 		"level": 1,
@@ -37,10 +25,6 @@ func create_new_save(slot: int) -> void:
 	
 	_write_save(slot, data)
 
-# ====================
-# CARGAR SAVE
-# ====================
-
 func load_game(slot: int) -> Dictionary:
 	if not save_exists(slot):
 		push_warning("Save slot %d does not exist" % slot)
@@ -52,10 +36,6 @@ func load_game(slot: int) -> Dictionary:
 	
 	var data = JSON.parse_string(text)
 	return data if data is Dictionary else {}
-
-# ====================
-# GUARDAR SAVE
-# ====================
 
 func save_game(slot: int, data: Dictionary) -> void:
 	_write_save(slot, data)

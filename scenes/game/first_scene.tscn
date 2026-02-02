@@ -1,5 +1,6 @@
-[gd_scene load_steps=35 format=3 uid="uid://gl0e62mb1s5l"]
+[gd_scene load_steps=41 format=3 uid="uid://gl0e62mb1s5l"]
 
+[ext_resource type="Script" uid="uid://e7n1praasbt3" path="res://scripts/game/first_scene.gd" id="1_3aj55"]
 [ext_resource type="Texture2D" uid="uid://c3fy16miwrs1b" path="res://resources/game/last_scene/escenariojam.png" id="1_sa2ma"]
 [ext_resource type="PackedScene" uid="uid://bo2rfmvtkremj" path="res://scenes/objects/player.tscn" id="1_y85gv"]
 [ext_resource type="Script" uid="uid://b7vevl7nirx3s" path="res://scripts/game/enemiesFirstScene.gd" id="2_xg086"]
@@ -11,14 +12,17 @@
 [ext_resource type="Texture2D" uid="uid://dd1is8rnx1qd1" path="res://resources/game/last_scene/bar_silla_pequeña.png" id="8_c6jcb"]
 [ext_resource type="Texture2D" uid="uid://cajdjd1nkl1e4" path="res://resources/game/last_scene/bar_mesa.png" id="9_1mhhf"]
 [ext_resource type="Texture2D" uid="uid://gn7i65ruj82g" path="res://resources/game/last_scene/bar_mesa_mini.png" id="10_kbp4h"]
-[ext_resource type="Script" uid="uid://dksalaryfomsc" path="res://scenes/game/puerta.gd" id="11_0qiuy"]
 [ext_resource type="Texture2D" uid="uid://bvmq3hauix5j3" path="res://resources/game/last_scene/bar_pilar.png" id="11_rs1fj"]
 [ext_resource type="Texture2D" uid="uid://cg7358okkt53g" path="res://resources/game/last_scene/bar_mesota.png" id="12_1mhhf"]
+[ext_resource type="Script" uid="uid://dlomifn1bt64" path="res://scenes/game/door.gd" id="12_x2arg"]
 [ext_resource type="Texture2D" uid="uid://dv0dlt4hmkxpt" path="res://resources/game/last_scene/bar_mesa_con_sillitas.png" id="13_kbp4h"]
 [ext_resource type="Texture2D" uid="uid://cpkkwj7ti7hed" path="res://resources/game/last_scene/bar_mesa_con_comida.png" id="14_rs1fj"]
 [ext_resource type="Texture2D" uid="uid://c44igg5lsesif" path="res://resources/game/last_scene/bar_puerta.png" id="15_0qiuy"]
 [ext_resource type="PackedScene" uid="uid://bsrwmm4riyq0s" path="res://scenes/objects/enemy_type_2.tscn" id="16_8pyda"]
 [ext_resource type="PackedScene" uid="uid://cjjc0wp2c5v7v" path="res://scenes/objects/enemy_type_3.tscn" id="17_28lrt"]
+[ext_resource type="PackedScene" uid="uid://dwqnstous8s7e" path="res://scenes/interface/pause_menu.tscn" id="21_x2arg"]
+[ext_resource type="PackedScene" uid="uid://10t42ic3fd4g" path="res://scenes/interface/dialogue_system.tscn" id="22_rdukn"]
+[ext_resource type="PackedScene" uid="uid://cuofbnbxksawq" path="res://scenes/objects/boss.tscn" id="23_x2arg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3pfse"]
 size = Vector2(9510, 3315.5)
@@ -76,7 +80,18 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x2arg"]
+bg_color = Color(0.06666667, 0.06666667, 0.06666667, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rdukn"]
+bg_color = Color(0.06666667, 0.06666667, 0.06666667, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+
 [node name="FirstScene" type="Node2D"]
+script = ExtResource("1_3aj55")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 offset_left = -8292.0
@@ -265,7 +280,7 @@ position = Vector2(-4760, 1530.75)
 shape = SubResource("RectangleShape2D_3pfse")
 
 [node name="Puerta" type="StaticBody2D" parent="Scenery"]
-script = ExtResource("11_0qiuy")
+script = ExtResource("12_x2arg")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/Puerta"]
 position = Vector2(6854.75, -999.75)
@@ -317,10 +332,10 @@ layout_mode = 3
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -2170.0
-offset_top = 50.0
-offset_right = -1970.0
-offset_bottom = 200.0
+offset_left = -318.0
+offset_top = 57.0
+offset_right = -99.0
+offset_bottom = 273.0
 grow_horizontal = 0
 pivot_offset = Vector2(100, 75)
 
@@ -329,25 +344,30 @@ layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 0.42000002
+offset_left = -16.0
+offset_top = -1.0
+offset_right = -6.0
+offset_bottom = 5.999996
 theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 70
 text = "COMBO"
 horizontal_alignment = 1
 
 [node name="ComboMultiplier" type="Label" parent="HUD/ComboContainer"]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.293
-anchor_right = 0.99500006
-anchor_bottom = 0.89300007
-offset_left = -1.0
-offset_top = 0.049999237
-offset_right = -1.5258789e-05
-offset_bottom = 0.049987793
+anchor_left = 9.415001
+anchor_top = 0.5
+anchor_right = 10.415001
+anchor_bottom = 1.047
+offset_left = -2073.8853
+offset_top = -39.0
+offset_right = -2073.8853
+offset_bottom = -21.050018
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 64
+theme_override_font_sizes/font_size = 100
 text = "x0"
 horizontal_alignment = 1
 
@@ -363,25 +383,42 @@ offset_right = -0.24002075
 offset_bottom = -0.16000366
 
 [node name="HealthBG" type="Panel" parent="HUD/HealthContainer"]
-layout_mode = 0
-offset_right = 295.0
-offset_bottom = 46.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.003
+anchor_top = 0.52500004
+anchor_right = 1.3130001
+anchor_bottom = 1.2370001
+offset_left = 0.099999964
+offset_right = 1.0999756
+offset_bottom = 0.039993286
 theme_override_styles/panel = SubResource("StyleBoxFlat_gurvk")
 
 [node name="HealthBar" type="ProgressBar" parent="HUD/HealthContainer"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = -0.39600003
-anchor_top = -0.39800003
-anchor_right = -0.142
-anchor_bottom = -0.358
-offset_left = 128.80002
-offset_top = 41.840004
-offset_right = 332.6
-offset_bottom = 68.64
+anchor_left = 0.037
+anchor_top = 0.65000004
+anchor_right = 1.2900001
+anchor_bottom = 1.087
+offset_left = -0.10000038
+offset_right = -3.0517578e-05
+offset_bottom = 0.040000916
 theme_override_styles/background = SubResource("StyleBoxFlat_b8qs6")
 value = 100.0
 show_percentage = false
+
+[node name="HealthLabel" type="Label" parent="HUD/HealthContainer"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.030000001
+anchor_top = -0.087000005
+anchor_right = 0.57000005
+anchor_bottom = 0.47500002
+offset_top = -0.039999485
+offset_right = -1.5258789e-05
+theme_override_font_sizes/font_size = 40
+text = "PLAYER"
 
 [node name="KillsContainer" type="Control" parent="HUD"]
 layout_mode = 3
@@ -394,10 +431,41 @@ offset_right = 330.0
 offset_bottom = -1110.0
 grow_vertical = 0
 
-[node name="KillsLabel" type="Label" parent="HUD/KillsContainer"]
+[node name="Panel2" type="Panel" parent="HUD/KillsContainer"]
 layout_mode = 0
-offset_right = 300.0
-offset_bottom = 50.0
+offset_left = 695.0
+offset_top = 70.0
+offset_right = 1103.0
+offset_bottom = 250.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_x2arg")
+
+[node name="Panel" type="Panel" parent="HUD/KillsContainer"]
+layout_mode = 0
+offset_left = 705.0
+offset_top = 81.0
+offset_right = 1091.0
+offset_bottom = 237.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_rdukn")
+
+[node name="KillsLabel" type="Label" parent="HUD/KillsContainer"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 2.453
+anchor_top = 2.7800002
+anchor_right = 3.5530002
+anchor_bottom = 3.7800002
+offset_left = 0.099975586
+offset_top = -1.5258789e-05
+offset_right = 0.099975586
+offset_bottom = -1.5258789e-05
 theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 24
-text = "KILLS: 0/30"
+theme_override_font_sizes/font_size = 50
+text = "KILLS:0/30"
+
+[node name="DialogueSystem" parent="." instance=ExtResource("22_rdukn")]
+
+[node name="Boss" parent="." instance=ExtResource("23_x2arg")]
+position = Vector2(5386, -833)
+scale = Vector2(3, 3)
+
+[node name="PauseMenu" parent="." instance=ExtResource("21_x2arg")]

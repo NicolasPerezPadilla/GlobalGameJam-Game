@@ -1,11 +1,110 @@
-[gd_scene load_steps=3 format=3 uid="uid://cuofbnbxksawq"]
+[gd_scene load_steps=19 format=3 uid="uid://cuofbnbxksawq"]
 
 [ext_resource type="Script" uid="uid://b414tddwn7cw" path="res://scripts/objects/boss.gd" id="1_yqhrv"]
+[ext_resource type="PackedScene" uid="uid://brm6lq32bqiv4" path="res://scenes/objects/boss_projectile.tscn" id="2_jpqed"]
+[ext_resource type="Texture2D" uid="uid://bpnsi3e3d4glp" path="res://resources/objects/boss/attack/ataque1boss_0001.png" id="2_uy2kg"]
+[ext_resource type="Texture2D" uid="uid://qsjyqdg87wma" path="res://resources/objects/boss/attack/ataque1boss_0002.png" id="3_jpqed"]
+[ext_resource type="Texture2D" uid="uid://c3e8bibokx1o8" path="res://resources/objects/boss/attack/ataque1boss_0003.png" id="4_ccioy"]
+[ext_resource type="Texture2D" uid="uid://dl4pwdyu1kto0" path="res://resources/objects/boss/attack/ataque1boss_0004.png" id="5_rogii"]
+[ext_resource type="Texture2D" uid="uid://vhct71gly5kg" path="res://resources/objects/boss/attack/ataque1boss_0005.png" id="6_5mx1b"]
+[ext_resource type="Texture2D" uid="uid://djpfn8n4o3868" path="res://resources/objects/boss/idle/boss-idle_0001.png" id="7_gobgx"]
+[ext_resource type="Texture2D" uid="uid://doln3h2btgohf" path="res://resources/objects/boss/idle/boss-idle_0002.png" id="8_dug3k"]
+[ext_resource type="Texture2D" uid="uid://dcv1b3jj8emv0" path="res://resources/objects/boss/idle/boss-idle_0003.png" id="9_rtfmo"]
+[ext_resource type="Texture2D" uid="uid://cv5vho6rh3gqs" path="res://resources/objects/boss/idle/boss-idle_0004.png" id="10_gc7bj"]
+[ext_resource type="Texture2D" uid="uid://bxyaw7b0jffrb" path="res://resources/objects/boss/idle/boss-idle_0005.png" id="11_4o34q"]
+[ext_resource type="Texture2D" uid="uid://d08ghaapvjhoa" path="res://resources/objects/boss/idle/boss-idle_0006.png" id="12_mfttf"]
+[ext_resource type="Texture2D" uid="uid://cbahkd4ikvb0f" path="res://resources/objects/boss/idle/boss-idle_0007.png" id="13_u56qq"]
+[ext_resource type="Texture2D" uid="uid://dpaitem0x1arh" path="res://resources/objects/boss/idle/boss-idle_0008.png" id="14_2xqmp"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_phs00"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_uy2kg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_jpqed")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_ccioy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_rogii")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_5mx1b")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_5mx1b")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_5mx1b")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_rogii")
+}],
+"loop": true,
+"name": &"attack",
+"speed": 9.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_gobgx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_dug3k")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_rtfmo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_gc7bj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_4o34q")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_mfttf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_u56qq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_2xqmp")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 10.0
+}]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_n6y7y"]
+size = Vector2(300, 627)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jpqed"]
+size = Vector2(251, 591)
 
 [node name="Boss" type="StaticBody2D"]
+collision_layer = 16
+collision_mask = 0
 script = ExtResource("1_yqhrv")
+projectile_scene = ExtResource("2_jpqed")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_phs00")
+animation = &"attack"
+frame_progress = 0.4793745
+
+[node name="HitArea" type="Area2D" parent="."]
+collision_layer = 32
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea"]
+position = Vector2(103, 32.5)
+shape = SubResource("RectangleShape2D_n6y7y")
+
+[node name="ProjectileSpawnPoint" type="Marker2D" parent="."]
+position = Vector2(46, 78)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_n6y7y")
+position = Vector2(105.5, 47.5)
+shape = SubResource("RectangleShape2D_jpqed")

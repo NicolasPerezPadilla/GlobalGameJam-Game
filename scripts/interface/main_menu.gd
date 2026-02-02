@@ -160,14 +160,20 @@ func start_game(slot: int):
 	await tween.finished
 	
 	# Cargar o crear partida
+	var is_new_game = false
 	if SaveManager.save_exists(slot):
 		var data = SaveManager.load_game(slot)
 		SaveManager.current_save_slot = slot
 	else:
 		SaveManager.create_new_save(slot)
 		SaveManager.current_save_slot = slot
+		is_new_game = true
 	
-	get_tree().change_scene_to_file("res://scenes/game/first_scene.tscn")
+	# Si es nueva partida, mostrar cinemática
+	if is_new_game:
+		get_tree().change_scene_to_file("res://scenes/interface/intro_cutscene.tscn")
+	else:
+		get_tree().change_scene_to_file("res://scenes/game/first_scene.tscn")
 
 # ==================== OPCIONES ====================
 

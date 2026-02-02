@@ -1,0 +1,193 @@
+[gd_scene load_steps=4 format=3 uid="uid://dwqnstous8s7e"]
+
+[ext_resource type="Script" uid="uid://dco66aat88fvb" path="res://scripts/interface/pause_menu.gd" id="1_1rdxg"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1rdxg"]
+bg_color = Color(0.06666667, 0.06666667, 0.06666667, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pqqti"]
+bg_color = Color(0.06666667, 0.06666667, 0.06666667, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+
+[node name="PauseMenu" type="CanvasLayer"]
+script = ExtResource("1_1rdxg")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchors_preset = -1
+anchor_left = 0.31100002
+anchor_top = 0.16100001
+anchor_right = 0.67300004
+anchor_bottom = 0.873
+offset_left = -0.12005615
+offset_top = 0.11997986
+offset_right = -0.16003418
+offset_bottom = 0.15997314
+color = Color(0.06666667, 0.06666667, 0.06666667, 1)
+
+[node name="MenuBox" type="Panel" parent="."]
+anchors_preset = -1
+anchor_left = 0.32700002
+anchor_top = 0.238
+anchor_right = 0.657
+anchor_bottom = 0.78700006
+offset_left = -6.840027
+offset_top = -0.040008545
+offset_right = 0.5599365
+offset_bottom = 7.039917
+theme_override_styles/panel = SubResource("StyleBoxFlat_1rdxg")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuBox"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.26200002
+anchor_right = 0.748
+anchor_bottom = 1.0150001
+offset_left = -0.10801697
+offset_right = -0.23202515
+offset_bottom = 0.014953613
+theme_override_constants/separation = 17
+alignment = 1
+
+[node name="Title" type="Label" parent="MenuBox/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "PAUSED
+"
+horizontal_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="MenuBox/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "RESUME"
+flat = true
+
+[node name="SaveButton" type="Button" parent="MenuBox/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "SAVE"
+flat = true
+
+[node name="SettingsButton" type="Button" parent="MenuBox/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "SETTINGS"
+flat = true
+
+[node name="ControlsButton" type="Button" parent="MenuBox/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "CONTROLS"
+flat = true
+
+[node name="MenuButton" type="Button" parent="MenuBox/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "
+BACK"
+flat = true
+
+[node name="ColorRect" type="ColorRect" parent="MenuBox"]
+layout_mode = 0
+offset_left = 198.0
+offset_top = 158.0
+offset_right = 453.0
+offset_bottom = 161.0
+
+[node name="ColorRect2" type="ColorRect" parent="MenuBox"]
+layout_mode = 0
+offset_left = 205.0
+offset_top = 463.0
+offset_right = 443.0
+offset_bottom = 467.0
+
+[node name="ControlsPanel" type="Panel" parent="."]
+visible = false
+offset_left = 622.0
+offset_top = 257.0
+offset_right = 1261.0
+offset_bottom = 857.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_pqqti")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ControlsPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.179
+anchor_top = 0.022000002
+anchor_right = 0.86500007
+anchor_bottom = 0.99700004
+offset_left = -13.381027
+offset_top = -0.20001411
+offset_right = -13.561096
+offset_bottom = -0.30004883
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="Title" type="Label" parent="ControlsPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "CONTROLS
+"
+horizontal_alignment = 1
+
+[node name="ControlsList" type="VBoxContainer" parent="ControlsPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 7
+alignment = 1
+
+[node name="Move" type="Label" parent="ControlsPanel/VBoxContainer/ControlsList"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "MOVE: A / D"
+horizontal_alignment = 1
+
+[node name="Jump" type="Label" parent="ControlsPanel/VBoxContainer/ControlsList"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "JUMP: SPACE"
+horizontal_alignment = 1
+
+[node name="Run" type="Label" parent="ControlsPanel/VBoxContainer/ControlsList"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "RUN: SHIFT"
+horizontal_alignment = 1
+
+[node name="Attack" type="Label" parent="ControlsPanel/VBoxContainer/ControlsList"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "ATTACK: LEFT CLICK"
+horizontal_alignment = 1
+
+[node name="Pause" type="Label" parent="ControlsPanel/VBoxContainer/ControlsList"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "PAUSE: ESC"
+horizontal_alignment = 1
+
+[node name="BackButton" type="Button" parent="ControlsPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "
+BACK"
+flat = true
+
+[node name="ColorRect" type="ColorRect" parent="ControlsPanel"]
+layout_mode = 0
+offset_left = 161.0
+offset_top = 158.0
+offset_right = 489.0
+offset_bottom = 161.0
+
+[node name="ColorRect2" type="ColorRect" parent="ControlsPanel"]
+layout_mode = 0
+offset_left = 200.0
+offset_top = 454.0
+offset_right = 451.0
+offset_bottom = 457.0
