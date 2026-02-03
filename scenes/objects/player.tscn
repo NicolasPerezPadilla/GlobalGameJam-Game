@@ -277,7 +277,7 @@ script = ExtResource("1_b5en7")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_ar08s")
 animation = &"meo"
-frame_progress = 0.88970995
+frame_progress = 0.43550274
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(1.5, 65.5)

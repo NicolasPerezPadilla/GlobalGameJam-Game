@@ -1,5 +1,8 @@
 extends CharacterBody2D
 
+# ─── AUDIO ──────────────────────────────────────────────────────
+@export var hit_sfx_path: String = "res://audio/sfx/punch.ogg"
+
 # Velocidades y aceleración
 var SPEED = 600
 var MAX_RUN_SPEED = 1000
@@ -80,9 +83,6 @@ var combo_reset_timer = 0.0
 var combo_reset_time = 1.5
 
 func _ready():
-	#collision_layer = 1  # Layer del player
-	#collision_mask = 4  # Solo colisiona con el mundo (suelo/paredes)
-	
 	if attack_collision:
 		attack_collision.disabled = true
 	
@@ -145,9 +145,9 @@ func _physics_process(delta: float) -> void:
 	
 	# Si está haciendo MEO, no procesar otros inputs
 	if is_meoing:
-		velocity.x = 0  # No moverse
+		velocity.x = 0
 		move_and_slide()
-		return  # No procesar nada más
+		return
 		
 	# Ataque aéreo - caída rápida
 	if is_air_attacking and not is_on_floor():
@@ -178,7 +178,6 @@ func _physics_process(delta: float) -> void:
 		momentum_multiplier = lerpf(1.0, MAX_MOMENTUM, speed_ratio)
 		was_running_on_ground = Input.is_action_pressed("RUN")
 		
-		# Resetear ataque aéreo al tocar suelo
 		if is_air_attacking:
 			is_air_attacking = false
 	
@@ -188,33 +187,25 @@ func handle_gravity(delta: float) -> void:
 	if is_on_floor():
 		return
 	
-	# Gravedad normal con control en caída
 	if velocity.y > 0:
 		velocity += get_gravity() * delta * 1.2
 	else:
 		velocity += get_gravity() * delta
 
 func handle_attack(delta: float) -> void:
-	# Manejar input de ataque
 	if Input.is_action_just_pressed("ATTACK") and cooldown_timer <= 0:
 		if is_on_floor():
-			# Ataque en suelo - sistema de combos
 			if not is_attacking:
-				# Iniciar combo
 				start_ground_attack(1)
 			elif can_combo and current_attack < 3:
-				# Continuar combo
 				start_ground_attack(current_attack + 1)
 		else:
-			# Ataque aéreo
 			if not is_attacking:
 				start_air_attack()
 	
-	# Manejar duración del ataque
 	if is_attacking:
 		attack_timer -= delta
 		
-		# A mitad de la animación, permitir combo
 		var attack_duration = get_current_attack_duration()
 		if attack_timer <= attack_duration * 0.4 and not can_combo:
 			can_combo = true
@@ -233,7 +224,6 @@ func start_ground_attack(attack_number: int) -> void:
 	if is_attacking and not can_combo:
 		return
 	
-	# Si estamos en un combo, no reiniciar todo
 	if not is_attacking:
 		enemies_hit_this_attack.clear()
 	
@@ -242,14 +232,11 @@ func start_ground_attack(attack_number: int) -> void:
 	can_combo = false
 	combo_timer = combo_window
 	
-	# Configurar duración
 	attack_timer = get_current_attack_duration()
 	
-	# Activar hitbox
 	if attack_collision:
 		attack_collision.disabled = false
 	
-	# Reproducir animación
 	if animated_sprite:
 		match attack_number:
 			1:
@@ -259,10 +246,9 @@ func start_ground_attack(attack_number: int) -> void:
 			3:
 				animated_sprite.play("attack2")
 	
-	# Impulso según el ataque
 	var impulse = 100.0
 	if attack_number == 3:
-		impulse = 150.0  # Más impulso en el golpe final
+		impulse = 150.0
 	
 	if animated_sprite:
 		if animated_sprite.flip_h:
@@ -273,38 +259,32 @@ func start_ground_attack(attack_number: int) -> void:
 func start_air_attack() -> void:
 	is_attacking = true
 	is_air_attacking = true
-	current_attack = 3  # Usar attack2 en el aire
-	attack_timer = attack2_duration * 0.7  # Reducir duración en aire
+	current_attack = 3
+	attack_timer = attack2_duration * 0.7
 	enemies_hit_this_attack.clear()
 	
-	# Activar hitbox
 	if attack_collision:
 		attack_collision.disabled = false
 	
-	# Animación
 	if animated_sprite:
 		animated_sprite.play("attack2")
 	
-	# Impulso hacia abajo
-	velocity.y = 200  # Empezar caída
+	velocity.y = 200
 
 func end_attack() -> void:
 	is_attacking = false
 	can_combo = false
 	
-	# Solo resetear combo si se acabó el tiempo
 	if combo_timer <= 0:
 		current_attack = 0
 	
 	cooldown_timer = attack_cooldown
 	
-	# Desactivar hitbox
 	if attack_collision:
 		attack_collision.disabled = true
 
 func _on_animation_finished() -> void:
 	if animated_sprite:
-		# Idle2 vuelve a idle1
 		if animated_sprite.animation == "idle2":
 			animated_sprite.play("idle1")
 			can_do_idle2 = false
@@ -320,13 +300,11 @@ func _on_attack_hit(body: Node2D) -> void:
 	enemies_hit_this_attack.append(body)
 	
 	if body.has_method("take_damage"):
-		# Determinar potencia del golpe
 		var hit_power = 1.0
 		var shake_amount = 8.0
 		var hitstop_time = 0.05
 		
 		if current_attack == 3:
-			# Golpe final más poderoso
 			hit_power = 2.0
 			shake_amount = 20.0
 			hitstop_time = 0.1
@@ -336,6 +314,9 @@ func _on_attack_hit(body: Node2D) -> void:
 		
 		# CAMERA SHAKE
 		add_camera_shake(shake_amount)
+		
+		# ── AUDIO: SFX de golpe al conectar ──
+		AudioManager.play_sfx(hit_sfx_path)
 		
 		# COMBO
 		total_combo_count += 1
@@ -352,7 +333,7 @@ func _on_attack_hit(body: Node2D) -> void:
 		if current_attack == 3:
 			if body.has_method("apply_knockback"):
 				var knockback_dir = (body.global_position - global_position).normalized()
-				knockback_dir.y = -0.5  # Lanzar hacia arriba
+				knockback_dir.y = -0.5
 				body.apply_knockback(knockback_dir * 600)
 		
 		print("💥 GOLPE! Ataque: ", current_attack, " | Combo total: x", total_combo_count, " | Daño: ", total_damage)
@@ -396,7 +377,6 @@ func take_damage(damage: int) -> void:
 	total_combo_count = 0
 	combo_reset_timer = 0.0
 	
-	# Reproducir animación de daño
 	animated_sprite.play("hit")
 	
 	print("🩸 Daño recibido! Vida: ", current_health, "/", max_health)
@@ -417,27 +397,22 @@ func update_animations() -> void:
 			animated_sprite.play("meo")
 		return
 		
-	# Ataque tiene prioridad
 	if is_attacking:
 		return
 	
-	# Animación de daño
 	if animated_sprite.animation == "hit":
 		if not animated_sprite.is_playing():
 			pass
 		else:
 			return
 	
-	# Flip basado en velocidad
 	if velocity.x > 10:
 		animated_sprite.flip_h = false
 	elif velocity.x < -10:
 		animated_sprite.flip_h = true
 	
-	# Seleccionar animación
 	if is_on_floor():
 		if abs(velocity.x) > 10:
-			# Determinar si camina o corre
 			if Input.is_action_pressed("RUN"):
 				if animated_sprite.animation != "run":
 					animated_sprite.play("run")
@@ -445,13 +420,11 @@ func update_animations() -> void:
 				if animated_sprite.animation != "walk":
 					animated_sprite.play("walk")
 		else:
-			# Idle con variaciones
 			if can_do_idle2 and animated_sprite.animation != "idle2":
 				animated_sprite.play("idle2")
 			elif animated_sprite.animation != "idle1" and animated_sprite.animation != "idle2":
 				animated_sprite.play("idle1")
 	else:
-		# En el aire
 		if velocity.y < 0:
 			if animated_sprite.animation != "jump":
 				animated_sprite.play("jump")
@@ -491,15 +464,9 @@ func handle_jump() -> void:
 		return
 
 func handle_meo_input():
-	# Solo permitir MEO si:
-	# - Está en el suelo
-	# - No se está moviendo
-	# - No está atacando
-	# - No está recibiendo daño
 	if Input.is_action_just_pressed("MEO") and is_on_floor() and abs(velocity.x) < 10 and not is_attacking and not is_meoing:
 		start_meo()
 	
-	# Cancelar MEO si presionas cualquier otra cosa
 	if is_meoing:
 		if Input.is_action_pressed("LEFT") or Input.is_action_pressed("RIGHT") or \
 		   Input.is_action_pressed("JUMP") or Input.is_action_pressed("ATTACK") or \

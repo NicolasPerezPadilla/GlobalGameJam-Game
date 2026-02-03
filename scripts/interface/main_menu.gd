@@ -1,5 +1,9 @@
 extends Control
 
+# ─── AUDIO ──────────────────────────────────────────────────────
+@export var menu_music_path: String = "res://audio/music/menu.ogg"
+@export var button_sfx_path: String = "res://audio/sfx/button.ogg"
+
 # Contenidos
 @onready var main_menu_content = $MainMenuContent
 @onready var save_load_content = $SaveLoadContent
@@ -53,12 +57,12 @@ func _ready():
 	# Mostrar solo menú principal
 	show_main_menu()
 	
-	# Conectar botones del menú principal
+	# ── Conectar botones del menú principal ──
 	play_button.pressed.connect(_on_play_pressed)
 	options_button.pressed.connect(_on_options_pressed)
 	quit_button.pressed.connect(_on_quit_pressed)
 	
-	# Conectar botones de save/load
+	# ── Conectar botones de save/load ──
 	slot1_button.pressed.connect(func(): _on_slot_pressed(1))
 	slot2_button.pressed.connect(func(): _on_slot_pressed(2))
 	slot3_button.pressed.connect(func(): _on_slot_pressed(3))
@@ -67,7 +71,7 @@ func _ready():
 	delete3_button.pressed.connect(func(): _on_delete_slot(3))
 	save_back_button.pressed.connect(show_main_menu)
 	
-	# Configurar opciones
+	# ── Configurar opciones ──
 	setup_options()
 	
 	# Conectar botones de opciones
@@ -76,20 +80,37 @@ func _ready():
 	
 	# Cargar configuración
 	SettingsManager.load_settings()
+	
+	# ── AUDIO: conectar SFX a TODOS los botones y poner música ──
+	_connect_sfx_to_all_buttons()
+	AudioManager.play_music(menu_music_path, true)
 
+# ─── SFX en todos los botones ────────────────────────────────────
+func _connect_sfx_to_all_buttons() -> void:
+	# Recopilar todos los botones del menú
+	var all_buttons: Array[Button] = [
+		play_button, options_button, quit_button,
+		slot1_button, slot2_button, slot3_button,
+		delete1_button, delete2_button, delete3_button,
+		save_back_button, apply_button, options_back_button
+	]
+	
+	for btn in all_buttons:
+		if btn:
+			btn.pressed.connect(_play_button_sfx)
+
+func _play_button_sfx() -> void:
+	AudioManager.play_sfx(button_sfx_path)
+
+# ─── Estilo ──────────────────────────────────────────────────────
 func style_all_buttons():
-	# Menú principal
 	MenuStyler.style_button(play_button)
 	MenuStyler.style_button(options_button)
 	MenuStyler.style_button(quit_button)
-	
-	# Save/Load
 	MenuStyler.style_button(slot1_button)
 	MenuStyler.style_button(slot2_button)
 	MenuStyler.style_button(slot3_button)
 	MenuStyler.style_button(save_back_button)
-	
-	# Opciones
 	MenuStyler.style_button(apply_button)
 	MenuStyler.style_button(options_back_button)
 
@@ -110,7 +131,9 @@ func show_options_menu():
 	save_load_content.visible = false
 	options_content.visible = true
 
-# ==================== MENÚ PRINCIPAL ====================
+# ═══════════════════════════════════════════════════════════════════
+#  MENÚ PRINCIPAL
+# ═══════════════════════════════════════════════════════════════════
 
 func _on_play_pressed():
 	show_save_load_menu()
@@ -121,10 +144,11 @@ func _on_options_pressed():
 func _on_quit_pressed():
 	get_tree().quit()
 
-# ==================== SAVE/LOAD ====================
+# ═══════════════════════════════════════════════════════════════════
+#  SAVE / LOAD
+# ═══════════════════════════════════════════════════════════════════
 
 func update_save_slots():
-	# Slot 1
 	if SaveManager.save_exists(1):
 		var data = SaveManager.load_game(1)
 		slot1_button.text = "SLOT 1 - LVL " + str(data.get("level", 1))
@@ -134,7 +158,6 @@ func update_save_slots():
 		slot1_button.text = "SLOT 1 - EMPTY"
 		delete1_button.visible = false
 	
-	# Slot 2
 	if SaveManager.save_exists(2):
 		var data = SaveManager.load_game(2)
 		slot2_button.text = "SLOT 2 - LVL " + str(data.get("level", 1))
@@ -144,7 +167,6 @@ func update_save_slots():
 		slot2_button.text = "SLOT 2 - EMPTY"
 		delete2_button.visible = false
 	
-	# Slot 3
 	if SaveManager.save_exists(3):
 		var data = SaveManager.load_game(3)
 		slot3_button.text = "SLOT 3 - LVL " + str(data.get("level", 1))
@@ -167,7 +189,6 @@ func start_game(slot: int):
 	tween.tween_property(self, "modulate:a", 0.0, 0.3)
 	await tween.finished
 	
-	# Cargar o crear partida
 	var is_new_game = false
 	if SaveManager.save_exists(slot):
 		var data = SaveManager.load_game(slot)
@@ -177,16 +198,19 @@ func start_game(slot: int):
 		SaveManager.current_save_slot = slot
 		is_new_game = true
 	
-	# Si es nueva partida, mostrar cinemática
+	# Detener música del menú antes de cambiar escena
+	AudioManager.stop_music()
+	
 	if is_new_game:
 		get_tree().change_scene_to_file("res://scenes/interface/intro_cutscene.tscn")
 	else:
 		get_tree().change_scene_to_file("res://scenes/game/first_scene.tscn")
 
-# ==================== OPCIONES ====================
+# ═══════════════════════════════════════════════════════════════════
+#  OPCIONES
+# ═══════════════════════════════════════════════════════════════════
 
 func setup_options():
-	# Sliders de audio
 	master_slider.min_value = 0
 	master_slider.max_value = 100
 	master_slider.step = 1
@@ -202,19 +226,15 @@ func setup_options():
 	sfx_slider.step = 1
 	sfx_slider.value = SettingsManager.sfx_volume
 	
-	# Conectar sliders
 	master_slider.value_changed.connect(_on_master_changed)
 	music_slider.value_changed.connect(_on_music_changed)
 	sfx_slider.value_changed.connect(_on_sfx_changed)
 	
-	# Actualizar labels
 	update_volume_labels()
 	
-	# Fullscreen
 	fullscreen_check.button_pressed = SettingsManager.fullscreen
 	fullscreen_check.toggled.connect(_on_fullscreen_toggled)
 	
-	# Resoluciones
 	for res_name in resolutions.keys():
 		resolution_option.add_item(res_name)
 	
@@ -258,7 +278,6 @@ func _on_apply_options():
 	print("✅ Settings applied and saved")
 
 func _on_delete_slot(slot: int):
-	# Crear diálogo de confirmación
 	var confirm_dialog = AcceptDialog.new()
 	confirm_dialog.dialog_text = "Delete save slot " + str(slot) + "?\nThis cannot be undone."
 	confirm_dialog.title = "Confirm Delete"
@@ -268,8 +287,8 @@ func _on_delete_slot(slot: int):
 	add_child(confirm_dialog)
 	confirm_dialog.popup_centered()
 	
-	# Esperar confirmación
 	confirm_dialog.confirmed.connect(func():
+		AudioManager.play_sfx(button_sfx_path)
 		SaveManager.delete_save(slot)
 		update_save_slots()
 		confirm_dialog.queue_free()
@@ -278,4 +297,4 @@ func _on_delete_slot(slot: int):
 	confirm_dialog.canceled.connect(func():
 		confirm_dialog.queue_free()
 	)
-		
+	

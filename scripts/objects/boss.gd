@@ -1,5 +1,9 @@
 extends StaticBody2D
 
+# ─── AUDIO ──────────────────────────────────────────────────────
+@export var boss_music_path: String = "res://audio/music/boss.ogg"
+@export var boss_shoot_sfx_path: String = "res://audio/sfx/projectile.ogg"
+
 @export var max_health = 2000
 @export var projectile_scene: PackedScene
 @export var shoot_interval = 1.5
@@ -20,12 +24,10 @@ var is_active = false
 @onready var spawn_manager = get_tree().root.find_child("EnemiesFirstScene", true, false)
 
 func _ready():
-	# Agregar al grupo boss
 	add_to_group("boss")
 	
 	player = get_tree().get_first_node_in_group("player")
 	
-	# Conectar señal del spawn manager
 	if spawn_manager:
 		spawn_manager.boss_should_spawn.connect(_on_boss_activate)
 	
@@ -46,12 +48,10 @@ func _ready():
 		hit_area.area_entered.connect(_on_hit_area_entered)
 
 func _on_hit_area_entered(area: Area2D) -> void:
-	# Detectar si es el ataque del jugador
 	if area.name == "AttackHitbox" or area.is_in_group("player_attack"):
 		var player_node = area.get_parent()
 		if player_node and player_node.is_in_group("player"):
-			# Calcular daño basado en el ataque del jugador
-			var damage = 25  # O puedes obtenerlo del jugador
+			var damage = 25
 			take_damage(damage)
 			
 func _on_boss_activate() -> void:
@@ -62,30 +62,24 @@ func _on_boss_activate() -> void:
 func play_intro_cinematic() -> void:
 	print("🎬 Cinemática del boss")
 	
-	# Congelar al jugador
 	if player:
 		player.set_physics_process(false)
 	
-	# Obtener cámara del jugador
 	if player and player.has_node("Camera2D"):
 		var camera = player.get_node("Camera2D")
 		var original_pos = camera.position
 		
-		# Guardar posición original
 		var player_camera_offset = camera.position
 		
-		# Calcular posición para enfocar al boss
 		var boss_screen_pos = global_position - player.global_position
 		
-		# Mover cámara hacia el boss
 		var tween = create_tween()
 		tween.tween_property(camera, "offset", boss_screen_pos, 1.5).set_ease(Tween.EASE_IN_OUT)
-		tween.tween_interval(2.0)  # Pausa dramática
+		tween.tween_interval(2.0)
 		tween.tween_property(camera, "offset", Vector2.ZERO, 1.0)
 		
 		await tween.finished
 		
-		# Descongelar jugador
 		if player:
 			player.set_physics_process(true)
 	else:
@@ -93,7 +87,7 @@ func play_intro_cinematic() -> void:
 		if player:
 			player.set_physics_process(true)
 	
-	# Activar boss
+	# Activar boss (ya dentro incluye el cambio de música)
 	activate_boss()
 
 func activate_boss():
@@ -101,13 +95,15 @@ func activate_boss():
 	set_physics_process(true)
 	
 	# Activar colisiones
-	collision_layer = 32  # Layer 6 (Boss)
+	collision_layer = 32
 	collision_mask = 0
 	
-	# Activar hit area para recibir golpes
 	if hit_area:
-		hit_area.collision_layer = 32  # Layer 6
+		hit_area.collision_layer = 32
 		hit_area.collision_mask = 0
+	
+	# ── AUDIO: cambiar música del nivel por la del boss ──
+	AudioManager.play_music(boss_music_path, true)
 	
 	enter_invulnerable_phase()
 	print("⚔️ Boss activado y listo para pelear")
@@ -143,7 +139,6 @@ func enter_invulnerable_phase() -> void:
 		else:
 			animated_sprite.play("idle")
 	
-	# Visual de invulnerabilidad
 	if animated_sprite:
 		animated_sprite.modulate = Color(0.5, 0.5, 0.5, 1.0)
 	
@@ -157,7 +152,6 @@ func enter_vulnerable_phase() -> void:
 		if animated_sprite.sprite_frames.has_animation("idle"):
 			animated_sprite.play("idle")
 	
-	# Visual de vulnerabilidad
 	if animated_sprite:
 		animated_sprite.modulate = Color(1.0, 1.0, 1.0, 1.0)
 	
@@ -169,17 +163,18 @@ func shoot_projectile() -> void:
 	
 	var projectile = projectile_scene.instantiate()
 	
-	# Posición de spawn
 	if projectile_spawn:
 		projectile.global_position = projectile_spawn.global_position
 	else:
 		projectile.global_position = global_position
 	
-	# Dirección hacia el jugador
 	var direction = (player.global_position - projectile.global_position).normalized()
 	projectile.direction = direction
 	
 	get_parent().add_child(projectile)
+	
+	# ── AUDIO: SFX al disparar proyectil ──
+	AudioManager.play_sfx(boss_shoot_sfx_path)
 	
 	print("💥 Boss dispara proyectil hacia jugador")
 
@@ -191,7 +186,6 @@ func take_damage(damage: int) -> void:
 	
 	current_health -= damage
 	
-	# Flash
 	if animated_sprite:
 		animated_sprite.modulate = Color.RED
 		await get_tree().create_timer(0.1).timeout
@@ -213,13 +207,15 @@ func die() -> void:
 	if hit_area:
 		hit_area.collision_layer = 0
 	
+	# ── AUDIO: detener música al derrotar al boss ──
+	AudioManager.stop_music()
+	
 	# Animación de muerte
 	if animated_sprite:
 		if animated_sprite.sprite_frames.has_animation("death"):
 			animated_sprite.play("death")
 			await animated_sprite.animation_finished
 		else:
-			# Fade out
 			var tween = create_tween()
 			tween.tween_property(animated_sprite, "modulate:a", 0.0, 1.0)
 			await tween.finished

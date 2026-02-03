@@ -19,6 +19,7 @@ config/features=PackedStringArray("4.5", "Forward Plus")
 SettingsManager="*res://scripts/interface/settings_manager.gd"
 MenuStyler="*res://scripts/interface/styles/menu_styler.gd"
 SaveManager="*res://scripts/interface/save_manager.gd"
+AudioManager="*res://audio/audio_manager.gd"
 
 [display]
 

@@ -62,7 +62,6 @@ func _ready():
 func _unhandled_input(event):
 	if event.is_action_pressed("ui_cancel"):
 		if is_paused:
-			# Si estamos en submenú, volver al principal
 			if settings_panel.visible or controls_panel.visible:
 				show_main()
 			else:
@@ -70,15 +69,22 @@ func _unhandled_input(event):
 		else:
 			pause()
 
+# ═══════════════════════════════════════════════════════════════════
+#  PAUSA / RETOMAR  ← música se detiene y retoma aquí
+# ═══════════════════════════════════════════════════════════════════
+
 func pause():
 	is_paused = true
 	visible = true
 	get_tree().paused = true
 	
+	# ── AUDIO: pausar música ──
+	AudioManager.pause_music()
+	
 	# Asegurar que se muestra el panel principal
 	show_main()
 	
-	# Animación
+	# Animación de entrada
 	main_panel.modulate.a = 0
 	main_panel.scale = Vector2(0.8, 0.8)
 	var tween = create_tween()
@@ -94,6 +100,9 @@ func unpause():
 	
 	visible = false
 	get_tree().paused = false
+	
+	# ── AUDIO: retomar música desde donde la dejó ──
+	AudioManager.resume_music()
 
 func show_main():
 	main_panel.visible = true
@@ -130,19 +139,22 @@ func _on_save_pressed():
 			SaveManager.save_game(SaveManager.current_save_slot, save_data)
 			print("💾 Game saved to slot ", SaveManager.current_save_slot)
 			
-			# Feedback
 			save_button.text = "SAVED!"
 			await get_tree().create_timer(1.0).timeout
 			save_button.text = "SAVE GAME"
 
 func _on_menu_pressed():
+	# ── AUDIO: detener música al volver al menú principal ──
+	AudioManager.stop_music()
+	
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://scenes/interface/main_menu.tscn")
 
-# ============ SETTINGS ============
+# ═══════════════════════════════════════════════════════════════════
+#  SETTINGS (dentro de pausa)
+# ═══════════════════════════════════════════════════════════════════
 
 func setup_settings():
-	# Sliders
 	master_slider.min_value = 0
 	master_slider.max_value = 100
 	master_slider.step = 1
@@ -158,18 +170,15 @@ func setup_settings():
 	sfx_slider.step = 1
 	sfx_slider.value = SettingsManager.sfx_volume
 	
-	# Conectar
 	master_slider.value_changed.connect(_on_master_changed)
 	music_slider.value_changed.connect(_on_music_changed)
 	sfx_slider.value_changed.connect(_on_sfx_changed)
 	
 	update_volume_labels()
 	
-	# Fullscreen
 	fullscreen_check.button_pressed = SettingsManager.fullscreen
 	fullscreen_check.toggled.connect(_on_fullscreen_toggled)
 	
-	# Resoluciones
 	for res_name in resolutions.keys():
 		resolution_option.add_item(res_name)
 	
@@ -180,7 +189,6 @@ func setup_settings():
 	
 	resolution_option.item_selected.connect(_on_resolution_selected)
 	
-	# Apply button
 	apply_button.pressed.connect(_on_apply_settings)
 
 func _on_master_changed(value: float):
@@ -215,7 +223,6 @@ func _on_apply_settings():
 	SettingsManager.save_settings()
 	print("✅ Settings applied")
 	
-	# Feedback
 	apply_button.text = "APPLIED!"
 	await get_tree().create_timer(0.5).timeout
 	apply_button.text = "APPLY"
