@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://gl0e62mb1s5l"]
+[gd_scene load_steps=43 format=3 uid="uid://gl0e62mb1s5l"]
 
 [ext_resource type="Script" uid="uid://e7n1praasbt3" path="res://scripts/game/first_scene.gd" id="1_3aj55"]
 [ext_resource type="Texture2D" uid="uid://c3fy16miwrs1b" path="res://resources/game/last_scene/escenariojam.png" id="1_sa2ma"]
@@ -58,12 +58,19 @@ size = Vector2(1354, 683)
 size = Vector2(468.5, 874.5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1mdwf"]
+size = Vector2(471, 913)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_biv8r"]
 size = Vector2(347, 3221.75)
 
+[sub_resource type="LabelSettings" id="LabelSettings_x2arg"]
+font_size = 70
+
+[sub_resource type="LabelSettings" id="LabelSettings_rdukn"]
+font_size = 70
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gurvk"]
-bg_color = Color(0, 0, 0, 1)
+bg_color = Color(0.06666667, 0.06666667, 0.06666667, 1)
 border_width_left = 3
 border_width_top = 3
 border_width_right = 3
@@ -292,8 +299,10 @@ scale = Vector2(3, 3)
 texture = ExtResource("15_0qiuy")
 
 [node name="HitArea" type="Area2D" parent="Scenery/Puerta"]
+position = Vector2(6800, -800)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/Puerta/HitArea"]
+position = Vector2(60.5, -201.5)
 shape = SubResource("RectangleShape2D_1mdwf")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="Scenery"]
@@ -307,6 +316,10 @@ shape = SubResource("RectangleShape2D_biv8r")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Scenery/StaticBody2D2"]
 position = Vector2(9178, -1371)
 shape = SubResource("RectangleShape2D_biv8r")
+
+[node name="Boss" parent="." instance=ExtResource("23_x2arg")]
+position = Vector2(5386, -833)
+scale = Vector2(3, 3)
 
 [node name="Entities" type="Node2D" parent="."]
 
@@ -351,6 +364,7 @@ offset_bottom = 5.999996
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 70
 text = "COMBO"
+label_settings = SubResource("LabelSettings_x2arg")
 horizontal_alignment = 1
 
 [node name="ComboMultiplier" type="Label" parent="HUD/ComboContainer"]
@@ -369,6 +383,7 @@ grow_vertical = 2
 theme_override_constants/outline_size = 6
 theme_override_font_sizes/font_size = 100
 text = "x0"
+label_settings = SubResource("LabelSettings_rdukn")
 horizontal_alignment = 1
 
 [node name="HealthContainer" type="Control" parent="HUD"]
@@ -389,36 +404,25 @@ anchor_left = 0.003
 anchor_top = 0.52500004
 anchor_right = 1.3130001
 anchor_bottom = 1.2370001
-offset_left = 0.099999964
-offset_right = 1.0999756
-offset_bottom = 0.039993286
+offset_left = 1.0999999
+offset_top = -45.0
+offset_right = 2.0999756
+offset_bottom = -44.960007
 theme_override_styles/panel = SubResource("StyleBoxFlat_gurvk")
 
 [node name="HealthBar" type="ProgressBar" parent="HUD/HealthContainer"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.037
-anchor_top = 0.65000004
+anchor_top = 0.1
 anchor_right = 1.2900001
-anchor_bottom = 1.087
+anchor_bottom = 0.537
 offset_left = -0.10000038
 offset_right = -3.0517578e-05
 offset_bottom = 0.040000916
 theme_override_styles/background = SubResource("StyleBoxFlat_b8qs6")
 value = 100.0
 show_percentage = false
-
-[node name="HealthLabel" type="Label" parent="HUD/HealthContainer"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.030000001
-anchor_top = -0.087000005
-anchor_right = 0.57000005
-anchor_bottom = 0.47500002
-offset_top = -0.039999485
-offset_right = -1.5258789e-05
-theme_override_font_sizes/font_size = 40
-text = "PLAYER"
 
 [node name="KillsContainer" type="Control" parent="HUD"]
 layout_mode = 3
@@ -450,22 +454,18 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_rdukn")
 [node name="KillsLabel" type="Label" parent="HUD/KillsContainer"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 2.453
-anchor_top = 2.7800002
-anchor_right = 3.5530002
-anchor_bottom = 3.7800002
-offset_left = 0.099975586
+anchor_left = 2.8030002
+anchor_top = 2.7400002
+anchor_right = 3.2170002
+anchor_bottom = 3.7400002
+offset_left = 0.09991455
 offset_top = -1.5258789e-05
-offset_right = 0.099975586
+offset_right = -0.100097656
 offset_bottom = -1.5258789e-05
 theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 50
-text = "KILLS:0/30"
+text = "0/30"
 
 [node name="DialogueSystem" parent="." instance=ExtResource("22_rdukn")]
-
-[node name="Boss" parent="." instance=ExtResource("23_x2arg")]
-position = Vector2(5386, -833)
-scale = Vector2(3, 3)
 
 [node name="PauseMenu" parent="." instance=ExtResource("21_x2arg")]

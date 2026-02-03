@@ -92,7 +92,7 @@ projectile_scene = ExtResource("2_jpqed")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_phs00")
 animation = &"attack"
-frame_progress = 0.4793745
+frame_progress = 0.4787814
 
 [node name="HitArea" type="Area2D" parent="."]
 collision_layer = 32

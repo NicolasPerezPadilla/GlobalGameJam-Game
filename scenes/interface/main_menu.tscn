@@ -6,7 +6,7 @@
 [sub_resource type="Theme" id="Theme_b5nk6"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_uidtg"]
-font_size = 93
+font_size = 145
 shadow_size = 26
 stacked_outline_count = 1
 
@@ -32,60 +32,60 @@ texture = ExtResource("2_bvgs0")
 [node name="Title" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.075
-anchor_top = 0.256
-anchor_right = 0.36600003
-anchor_bottom = 0.404
-offset_left = -34.0
-offset_top = -91.48001
-offset_right = -34.72003
-offset_bottom = -60.320007
-text = "NO ID
+anchor_left = 0.068
+anchor_top = 0.124000005
+anchor_right = 0.358
+anchor_bottom = 0.395
+offset_left = -0.5600128
+offset_top = 0.07998657
+offset_right = 0.6399536
+offset_bottom = 0.3999939
+text = "NO/ID
  "
 label_settings = SubResource("LabelSettings_uidtg")
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="MainMenuContent" type="VBoxContainer" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.119
-anchor_top = 0.50200003
-anchor_right = 0.289
-anchor_bottom = 0.813
-offset_left = 0.519989
-offset_top = -54.160034
-offset_right = 0.11999512
-offset_bottom = -54.04004
+anchor_left = 0.10700001
+anchor_top = 0.42800003
+anchor_right = 0.277
+anchor_bottom = 0.739
+offset_left = 0.5599823
+offset_top = -0.24002075
+offset_right = 0.15997314
+offset_bottom = -0.11999512
 theme_override_constants/separation = 33
 alignment = 1
 
 [node name="PlayButton" type="Button" parent="MainMenuContent"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 60
-text = "Play"
+text = "PLAY"
 flat = true
 icon_alignment = 1
 
 [node name="OptionsButton" type="Button" parent="MainMenuContent"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 60
-text = "Options"
+text = "OPTIONS"
 flat = true
 
 [node name="QuitButton" type="Button" parent="MainMenuContent"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 60
-text = "Quit"
+text = "QUIT"
 flat = true
 
 [node name="SaveLoadContent" type="VBoxContainer" parent="."]
-visible = false
 layout_mode = 0
-offset_left = 204.0
-offset_top = 433.0
-offset_right = 548.0
-offset_bottom = 933.0
+offset_left = 67.0
+offset_top = 383.0
+offset_right = 712.0
+offset_bottom = 883.0
 theme_override_constants/separation = 7
 alignment = 1
 
@@ -96,22 +96,52 @@ text = "SELECT SLOT
 "
 horizontal_alignment = 1
 
-[node name="Button" type="Button" parent="SaveLoadContent"]
+[node name="Slot1Container" type="HBoxContainer" parent="SaveLoadContent"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Slot1Button" type="Button" parent="SaveLoadContent/Slot1Container"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 45
 text = "SLOT 1 - EMPTY"
 flat = true
 
-[node name="Button2" type="Button" parent="SaveLoadContent"]
+[node name="Delete1Button" type="Button" parent="SaveLoadContent/Slot1Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 45
+text = "- DELETE"
+flat = true
+
+[node name="Slot2Container" type="HBoxContainer" parent="SaveLoadContent"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Slot2Button" type="Button" parent="SaveLoadContent/Slot2Container"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 45
 text = "SLOT 2 - EMPTY"
 flat = true
 
-[node name="Button3" type="Button" parent="SaveLoadContent"]
+[node name="Delete2Button" type="Button" parent="SaveLoadContent/Slot2Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 45
+text = "- DELETE"
+flat = true
+
+[node name="Slot3Container" type="HBoxContainer" parent="SaveLoadContent"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Slot3Button" type="Button" parent="SaveLoadContent/Slot3Container"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 45
 text = "SLOT 3 - EMPTY"
+flat = true
+
+[node name="Delete3Button" type="Button" parent="SaveLoadContent/Slot3Container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 45
+text = "- DELETE"
 flat = true
 
 [node name="Label2" type="Label" parent="SaveLoadContent"]
@@ -119,7 +149,7 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 40
 horizontal_alignment = 1
 
-[node name="Button4" type="Button" parent="SaveLoadContent"]
+[node name="BackButton" type="Button" parent="SaveLoadContent"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 50
 text = "BACK"
@@ -128,10 +158,10 @@ flat = true
 [node name="OptionsContent" type="VBoxContainer" parent="."]
 visible = false
 layout_mode = 0
-offset_left = 213.0
-offset_top = 404.0
-offset_right = 553.0
-offset_bottom = 1045.0
+offset_left = 185.0
+offset_top = 335.0
+offset_right = 579.0
+offset_bottom = 994.0
 theme_override_constants/separation = 16
 
 [node name="Label" type="Label" parent="OptionsContent"]

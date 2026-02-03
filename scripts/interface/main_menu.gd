@@ -11,10 +11,15 @@ extends Control
 @onready var quit_button = $MainMenuContent/QuitButton
 
 # Botones de save/load
-@onready var slot1_button = $SaveLoadContent/Button
-@onready var slot2_button = $SaveLoadContent/Button2
-@onready var slot3_button = $SaveLoadContent/Button3
-@onready var save_back_button = $SaveLoadContent/Button4
+@onready var slot1_button = $SaveLoadContent/Slot1Container/Slot1Button
+@onready var slot2_button = $SaveLoadContent/Slot2Container/Slot2Button
+@onready var slot3_button = $SaveLoadContent/Slot3Container/Slot3Button
+
+@onready var delete1_button = $SaveLoadContent/Slot1Container/Delete1Button
+@onready var delete2_button = $SaveLoadContent/Slot2Container/Delete2Button
+@onready var delete3_button = $SaveLoadContent/Slot3Container/Delete3Button
+
+@onready var save_back_button = $SaveLoadContent/BackButton
 
 # Opciones
 @onready var master_slider = $OptionsContent/HSlider
@@ -57,6 +62,9 @@ func _ready():
 	slot1_button.pressed.connect(func(): _on_slot_pressed(1))
 	slot2_button.pressed.connect(func(): _on_slot_pressed(2))
 	slot3_button.pressed.connect(func(): _on_slot_pressed(3))
+	delete1_button.pressed.connect(func(): _on_delete_slot(1))
+	delete2_button.pressed.connect(func(): _on_delete_slot(2))
+	delete3_button.pressed.connect(func(): _on_delete_slot(3))
 	save_back_button.pressed.connect(show_main_menu)
 	
 	# Configurar opciones
@@ -119,36 +127,36 @@ func update_save_slots():
 	# Slot 1
 	if SaveManager.save_exists(1):
 		var data = SaveManager.load_game(1)
-		slot1_button.text = "SLOT 1 - LVL " + str(data["level"])
+		slot1_button.text = "SLOT 1 - LVL " + str(data.get("level", 1))
+		delete1_button.visible = true
+		delete1_button.disabled = false
 	else:
 		slot1_button.text = "SLOT 1 - EMPTY"
+		delete1_button.visible = false
 	
 	# Slot 2
 	if SaveManager.save_exists(2):
 		var data = SaveManager.load_game(2)
-		slot2_button.text = "SLOT 2 - LVL " + str(data["level"])
+		slot2_button.text = "SLOT 2 - LVL " + str(data.get("level", 1))
+		delete2_button.visible = true
+		delete2_button.disabled = false
 	else:
 		slot2_button.text = "SLOT 2 - EMPTY"
+		delete2_button.visible = false
 	
 	# Slot 3
 	if SaveManager.save_exists(3):
 		var data = SaveManager.load_game(3)
-		slot3_button.text = "SLOT 3 - LVL " + str(data["level"])
+		slot3_button.text = "SLOT 3 - LVL " + str(data.get("level", 1))
+		delete3_button.visible = true
+		delete3_button.disabled = false
 	else:
 		slot3_button.text = "SLOT 3 - EMPTY"
-	
+		delete3_button.visible = false
 
 func _on_slot_pressed(slot: int):
-	if delete_mode:
-		# Modo borrar
-		if SaveManager.save_exists(slot):
-			SaveManager.delete_save(slot)
-			update_save_slots()
-			delete_mode = false
-	else:
-		# Modo jugar
-		selected_slot = slot
-		start_game(slot)
+	selected_slot = slot
+	start_game(slot)
 
 func _on_delete_pressed():
 	delete_mode = not delete_mode
@@ -248,3 +256,26 @@ func _on_apply_options():
 	SettingsManager.apply_settings()
 	SettingsManager.save_settings()
 	print("✅ Settings applied and saved")
+
+func _on_delete_slot(slot: int):
+	# Crear diálogo de confirmación
+	var confirm_dialog = AcceptDialog.new()
+	confirm_dialog.dialog_text = "Delete save slot " + str(slot) + "?\nThis cannot be undone."
+	confirm_dialog.title = "Confirm Delete"
+	confirm_dialog.ok_button_text = "DELETE"
+	confirm_dialog.add_cancel_button("CANCEL")
+	
+	add_child(confirm_dialog)
+	confirm_dialog.popup_centered()
+	
+	# Esperar confirmación
+	confirm_dialog.confirmed.connect(func():
+		SaveManager.delete_save(slot)
+		update_save_slots()
+		confirm_dialog.queue_free()
+	)
+	
+	confirm_dialog.canceled.connect(func():
+		confirm_dialog.queue_free()
+	)
+		

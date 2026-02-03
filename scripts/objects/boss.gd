@@ -1,10 +1,10 @@
 extends StaticBody2D
 
-@export var max_health = 500
+@export var max_health = 2000
 @export var projectile_scene: PackedScene
-@export var shoot_interval = 2.0
-@export var vulnerable_time = 5.0
-@export var invulnerable_time = 8.0
+@export var shoot_interval = 1.5
+@export var vulnerable_time = 6
+@export var invulnerable_time = 10
 
 var current_health = max_health
 var is_vulnerable = false

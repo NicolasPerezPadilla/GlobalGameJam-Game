@@ -1,36 +1,72 @@
 extends CanvasLayer
 
-@onready var menu_box = $MenuBox
+# Paneles
+@onready var main_panel = $MenuBox
+@onready var settings_panel = $SettingsPanel
+@onready var controls_panel = $ControlsPanel
+
+# Botones principales
 @onready var resume_button = $MenuBox/VBoxContainer/ResumeButton
 @onready var save_button = $MenuBox/VBoxContainer/SaveButton
 @onready var settings_button = $MenuBox/VBoxContainer/SettingsButton
 @onready var controls_button = $MenuBox/VBoxContainer/ControlsButton
 @onready var menu_button = $MenuBox/VBoxContainer/MenuButton
 
-# Paneles adicionales
-#@onready var settings_panel = $SettingsPanel  # Lo crearemos
-@onready var controls_panel = $ControlsPanel  # Lo crearemos
+# Settings
+@onready var master_slider = $SettingsPanel/VBoxContainer/MasterSlider
+@onready var music_slider = $SettingsPanel/VBoxContainer/MusicSlider
+@onready var sfx_slider = $SettingsPanel/VBoxContainer/SFXSlider
+@onready var master_label = $SettingsPanel/VBoxContainer/MasterLabel
+@onready var music_label = $SettingsPanel/VBoxContainer/MusicLabel
+@onready var sfx_label = $SettingsPanel/VBoxContainer/SFXLabel
+@onready var fullscreen_check = $SettingsPanel/VBoxContainer/FullscreenCheck
+@onready var resolution_option = $SettingsPanel/VBoxContainer/ResolutionOption
+@onready var apply_button = $SettingsPanel/VBoxContainer/ApplyButton
+@onready var settings_back = $SettingsPanel/VBoxContainer/BackButton
+
+# Controls
+@onready var controls_back = $ControlsPanel/VBoxContainer/BackButton
 
 var is_paused = false
 
+# Resoluciones
+var resolutions = {
+	"1920x1080": Vector2i(1920, 1080),
+	"1600x900": Vector2i(1600, 900),
+	"1366x768": Vector2i(1366, 768),
+	"1280x720": Vector2i(1280, 720),
+	"1024x576": Vector2i(1024, 576)
+}
+
 func _ready():
 	visible = false
-	process_mode = Node.PROCESS_MODE_ALWAYS  # IMPORTANTE: Procesar incluso pausado
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	
-	# Estilizar botones
-	style_all_buttons()
-	
-	# Conectar
+	# Conectar botones principales
 	resume_button.pressed.connect(unpause)
 	save_button.pressed.connect(_on_save_pressed)
 	settings_button.pressed.connect(show_settings)
 	controls_button.pressed.connect(show_controls)
 	menu_button.pressed.connect(_on_menu_pressed)
+	
+	# Conectar botones de back
+	settings_back.pressed.connect(show_main)
+	controls_back.pressed.connect(show_main)
+	
+	# Setup settings
+	setup_settings()
+	
+	# Mostrar panel principal
+	show_main()
 
 func _unhandled_input(event):
-	if event.is_action_pressed("ui_cancel"):  # ESC
+	if event.is_action_pressed("ui_cancel"):
 		if is_paused:
-			unpause()
+			# Si estamos en submenú, volver al principal
+			if settings_panel.visible or controls_panel.visible:
+				show_main()
+			else:
+				unpause()
 		else:
 			pause()
 
@@ -39,58 +75,147 @@ func pause():
 	visible = true
 	get_tree().paused = true
 	
-	# Animación de entrada
-	menu_box.modulate.a = 0
-	menu_box.scale = Vector2(0.8, 0.8)
+	# Asegurar que se muestra el panel principal
+	show_main()
+	
+	# Animación
+	main_panel.modulate.a = 0
+	main_panel.scale = Vector2(0.8, 0.8)
 	var tween = create_tween()
-	tween.tween_property(menu_box, "modulate:a", 1.0, 0.2)
-	tween.parallel().tween_property(menu_box, "scale", Vector2(1.0, 1.0), 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	tween.tween_property(main_panel, "modulate:a", 1.0, 0.2)
+	tween.parallel().tween_property(main_panel, "scale", Vector2(1.0, 1.0), 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 
 func unpause():
 	is_paused = false
 	
-	# Animación de salida
 	var tween = create_tween()
-	tween.tween_property(menu_box, "modulate:a", 0.0, 0.2)
+	tween.tween_property(main_panel, "modulate:a", 0.0, 0.2)
 	await tween.finished
 	
 	visible = false
 	get_tree().paused = false
 
+func show_main():
+	main_panel.visible = true
+	settings_panel.visible = false
+	controls_panel.visible = false
+
+func show_settings():
+	main_panel.visible = false
+	settings_panel.visible = true
+	controls_panel.visible = false
+
+func show_controls():
+	main_panel.visible = false
+	settings_panel.visible = false
+	controls_panel.visible = true
+
 func _on_save_pressed():
 	if SaveManager.current_save_slot > 0:
-		# Obtener datos del jugador
 		var player = get_tree().get_first_node_in_group("player")
 		if player:
-			var save_data = SaveManager.SaveData.new()
-			save_data.slot_number = SaveManager.current_save_slot
-			save_data.health = player.current_health
-			save_data.max_health = player.max_health
-			save_data.position = player.global_position
-			save_data.level = 1  # Ajusta según tu juego
+			var save_data = {
+				"level": 1,
+				"player": {
+					"hp": player.current_health,
+					"max_hp": player.max_health,
+					"position": {
+						"x": player.global_position.x,
+						"y": player.global_position.y
+					}
+				},
+				"play_time": 0
+			}
 			
 			SaveManager.save_game(SaveManager.current_save_slot, save_data)
-			print("💾 Game saved!")
+			print("💾 Game saved to slot ", SaveManager.current_save_slot)
 			
-			# Feedback visual
+			# Feedback
 			save_button.text = "SAVED!"
 			await get_tree().create_timer(1.0).timeout
 			save_button.text = "SAVE GAME"
-
-func show_settings():
-	# Ocultar menú principal, mostrar settings
-	menu_box.visible = false
-	#settings_panel.visible = true
-
-func show_controls():
-	# Ocultar menú principal, mostrar controles
-	menu_box.visible = false
-	controls_panel.visible = true
 
 func _on_menu_pressed():
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://scenes/interface/main_menu.tscn")
 
-func style_all_buttons():
-	for button in [resume_button, save_button, settings_button, controls_button, menu_button]:
-		MenuStyler.style_button(button)
+# ============ SETTINGS ============
+
+func setup_settings():
+	# Sliders
+	master_slider.min_value = 0
+	master_slider.max_value = 100
+	master_slider.step = 1
+	master_slider.value = SettingsManager.master_volume
+	
+	music_slider.min_value = 0
+	music_slider.max_value = 100
+	music_slider.step = 1
+	music_slider.value = SettingsManager.music_volume
+	
+	sfx_slider.min_value = 0
+	sfx_slider.max_value = 100
+	sfx_slider.step = 1
+	sfx_slider.value = SettingsManager.sfx_volume
+	
+	# Conectar
+	master_slider.value_changed.connect(_on_master_changed)
+	music_slider.value_changed.connect(_on_music_changed)
+	sfx_slider.value_changed.connect(_on_sfx_changed)
+	
+	update_volume_labels()
+	
+	# Fullscreen
+	fullscreen_check.button_pressed = SettingsManager.fullscreen
+	fullscreen_check.toggled.connect(_on_fullscreen_toggled)
+	
+	# Resoluciones
+	for res_name in resolutions.keys():
+		resolution_option.add_item(res_name)
+	
+	var current_res = str(SettingsManager.resolution.x) + "x" + str(SettingsManager.resolution.y)
+	var index = resolutions.keys().find(current_res)
+	if index >= 0:
+		resolution_option.selected = index
+	
+	resolution_option.item_selected.connect(_on_resolution_selected)
+	
+	# Apply button
+	apply_button.pressed.connect(_on_apply_settings)
+
+func _on_master_changed(value: float):
+	SettingsManager.master_volume = value
+	update_volume_labels()
+	SettingsManager.apply_audio_settings()
+
+func _on_music_changed(value: float):
+	SettingsManager.music_volume = value
+	update_volume_labels()
+	SettingsManager.apply_audio_settings()
+
+func _on_sfx_changed(value: float):
+	SettingsManager.sfx_volume = value
+	update_volume_labels()
+	SettingsManager.apply_audio_settings()
+
+func update_volume_labels():
+	master_label.text = "MASTER: " + str(int(master_slider.value)) + "%"
+	music_label.text = "MUSIC: " + str(int(music_slider.value)) + "%"
+	sfx_label.text = "SFX: " + str(int(sfx_slider.value)) + "%"
+
+func _on_fullscreen_toggled(toggled: bool):
+	SettingsManager.fullscreen = toggled
+
+func _on_resolution_selected(index: int):
+	var res_name = resolutions.keys()[index]
+	SettingsManager.resolution = resolutions[res_name]
+
+func _on_apply_settings():
+	SettingsManager.apply_settings()
+	SettingsManager.save_settings()
+	print("✅ Settings applied")
+	
+	# Feedback
+	apply_button.text = "APPLIED!"
+	await get_tree().create_timer(0.5).timeout
+	apply_button.text = "APPLY"

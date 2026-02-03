@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://dwqnstous8s7e"]
+[gd_scene load_steps=5 format=3 uid="uid://dwqnstous8s7e"]
 
 [ext_resource type="Script" uid="uid://dco66aat88fvb" path="res://scripts/interface/pause_menu.gd" id="1_1rdxg"]
 
@@ -16,20 +16,15 @@ border_width_top = 10
 border_width_right = 10
 border_width_bottom = 10
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mj702"]
+bg_color = Color(0.06666667, 0.06666667, 0.06666667, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+
 [node name="PauseMenu" type="CanvasLayer"]
 script = ExtResource("1_1rdxg")
-
-[node name="ColorRect" type="ColorRect" parent="."]
-anchors_preset = -1
-anchor_left = 0.31100002
-anchor_top = 0.16100001
-anchor_right = 0.67300004
-anchor_bottom = 0.873
-offset_left = -0.12005615
-offset_top = 0.11997986
-offset_right = -0.16003418
-offset_bottom = 0.15997314
-color = Color(0.06666667, 0.06666667, 0.06666667, 1)
 
 [node name="MenuBox" type="Panel" parent="."]
 anchors_preset = -1
@@ -52,7 +47,7 @@ anchor_bottom = 1.0150001
 offset_left = -0.10801697
 offset_right = -0.23202515
 offset_bottom = 0.014953613
-theme_override_constants/separation = 17
+theme_override_constants/separation = 20
 alignment = 1
 
 [node name="Title" type="Label" parent="MenuBox/VBoxContainer"]
@@ -103,12 +98,11 @@ offset_bottom = 161.0
 [node name="ColorRect2" type="ColorRect" parent="MenuBox"]
 layout_mode = 0
 offset_left = 205.0
-offset_top = 463.0
+offset_top = 478.0
 offset_right = 443.0
-offset_bottom = 467.0
+offset_bottom = 482.0
 
 [node name="ControlsPanel" type="Panel" parent="."]
-visible = false
 offset_left = 622.0
 offset_top = 257.0
 offset_right = 1261.0
@@ -191,3 +185,89 @@ offset_left = 200.0
 offset_top = 454.0
 offset_right = 451.0
 offset_bottom = 457.0
+
+[node name="SettingsPanel" type="Panel" parent="."]
+offset_left = 622.0
+offset_top = 257.0
+offset_right = 1262.0
+offset_bottom = 856.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_mj702")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SettingsPanel"]
+layout_mode = 0
+offset_left = 151.0
+offset_top = 35.0
+offset_right = 488.0
+offset_bottom = 563.0
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="SettingsTitle" type="Label" parent="SettingsPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 45
+text = "SETTINGS
+"
+horizontal_alignment = 1
+
+[node name="MasterLabel" type="Label" parent="SettingsPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "MASTER"
+horizontal_alignment = 1
+
+[node name="MasterSlider" type="HSlider" parent="SettingsPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="MusicLabel" type="Label" parent="SettingsPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "MUSIC"
+horizontal_alignment = 1
+
+[node name="MusicSlider" type="HSlider" parent="SettingsPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="SFXLabel" type="Label" parent="SettingsPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "SFX"
+horizontal_alignment = 1
+
+[node name="SFXSlider" type="HSlider" parent="SettingsPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="FullscreenCheck" type="CheckBox" parent="SettingsPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "FULLSCREEN"
+alignment = 1
+
+[node name="ResolutionLabel" type="Label" parent="SettingsPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "RESOLUTION"
+horizontal_alignment = 1
+
+[node name="ResolutionOption" type="OptionButton" parent="SettingsPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+
+[node name="ApplyButton" type="Button" parent="SettingsPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "APPLY"
+flat = true
+
+[node name="BackButton" type="Button" parent="SettingsPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 9
+theme_override_font_sizes/font_size = 40
+text = "BACK"
+flat = true
+
+[node name="ColorRect" type="ColorRect" parent="SettingsPanel"]
+layout_mode = 0
+offset_left = 189.0
+offset_top = 102.0
+offset_right = 444.0
+offset_bottom = 105.0

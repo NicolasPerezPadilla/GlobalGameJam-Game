@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=3 uid="uid://bo2rfmvtkremj"]
+[gd_scene load_steps=47 format=3 uid="uid://bo2rfmvtkremj"]
 
 [ext_resource type="Script" uid="uid://wi44jry06p7y" path="res://scripts/objects/player.gd" id="1_b5en7"]
 [ext_resource type="Texture2D" uid="uid://dxlihwnatgmk7" path="res://resources/objects/player/idle/idle1_0001.png" id="2_g4pvk"]
@@ -40,6 +40,9 @@
 [ext_resource type="Texture2D" uid="uid://cujxi8rt7ng4o" path="res://resources/objects/player/jump/salto_0001.png" id="21_u412g"]
 [ext_resource type="Texture2D" uid="uid://8bo43h6y4qi" path="res://resources/objects/player/run/correr_0008.png" id="21_vpwpc"]
 [ext_resource type="Texture2D" uid="uid://dg2uoj4vmds2t" path="res://resources/objects/player/jump/salto_0002.png" id="22_exui1"]
+[ext_resource type="Texture2D" uid="uid://b1ifxjrmcc0gj" path="res://resources/objects/player/idle/MEO_0001.png" id="25_exui1"]
+[ext_resource type="Texture2D" uid="uid://dcoshnxmuafmv" path="res://resources/objects/player/idle/MEO_0002.png" id="26_q50e8"]
+[ext_resource type="Texture2D" uid="uid://bsl0jii5nu4yu" path="res://resources/objects/player/idle/MEO_0003.png" id="27_mvvea"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_ar08s"]
 animations = [{
@@ -190,6 +193,20 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": ExtResource("25_exui1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("26_q50e8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("27_mvvea")
+}],
+"loop": true,
+"name": &"meo",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": ExtResource("14_6nhbw")
 }, {
 "duration": 1.0,
@@ -259,8 +276,8 @@ script = ExtResource("1_b5en7")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_ar08s")
-animation = &"jump"
-frame_progress = 0.57194734
+animation = &"meo"
+frame_progress = 0.88970995
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(1.5, 65.5)

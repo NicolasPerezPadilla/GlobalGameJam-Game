@@ -62,6 +62,8 @@ var camera_shake_decay = 5.0
 var idle_timer = 0.0
 var idle_variation_time = 5.0  # Cada 5 segundos puede hacer idle2
 var can_do_idle2 = false
+var is_meoing = false
+var meo_triggered = false
 
 # Referencias
 @onready var attack_hitbox: Area2D = $AttackHitbox
@@ -139,6 +141,14 @@ func _physics_process(delta: float) -> void:
 	# Gravedad
 	handle_gravity(delta)
 	
+	handle_meo_input()
+	
+	# Si está haciendo MEO, no procesar otros inputs
+	if is_meoing:
+		velocity.x = 0  # No moverse
+		move_and_slide()
+		return  # No procesar nada más
+		
 	# Ataque aéreo - caída rápida
 	if is_air_attacking and not is_on_floor():
 		velocity.y += air_attack_slam_force * delta
@@ -373,6 +383,9 @@ func handle_camera_shake(delta: float) -> void:
 func take_damage(damage: int) -> void:
 	if is_invulnerable:
 		return
+		
+	if is_meoing:
+		cancel_meo()
 	
 	current_health -= damage
 	is_invulnerable = true
@@ -384,8 +397,7 @@ func take_damage(damage: int) -> void:
 	combo_reset_timer = 0.0
 	
 	# Reproducir animación de daño
-	if animated_sprite and not is_attacking:
-		animated_sprite.play("hit")
+	animated_sprite.play("hit")
 	
 	print("🩸 Daño recibido! Vida: ", current_health, "/", max_health)
 	
@@ -400,13 +412,21 @@ func update_animations() -> void:
 	if not animated_sprite:
 		return
 	
+	if is_meoing:
+		if animated_sprite.animation != "meo":
+			animated_sprite.play("meo")
+		return
+		
 	# Ataque tiene prioridad
 	if is_attacking:
 		return
 	
 	# Animación de daño
-	if animated_sprite.animation == "hit" and animated_sprite.is_playing():
-		return
+	if animated_sprite.animation == "hit":
+		if not animated_sprite.is_playing():
+			pass
+		else:
+			return
 	
 	# Flip basado en velocidad
 	if velocity.x > 10:
@@ -469,3 +489,34 @@ func handle_jump() -> void:
 		if abs(velocity.x) > MAX_RUN_SPEED * 0.9:
 			velocity.x *= 1.05
 		return
+
+func handle_meo_input():
+	# Solo permitir MEO si:
+	# - Está en el suelo
+	# - No se está moviendo
+	# - No está atacando
+	# - No está recibiendo daño
+	if Input.is_action_just_pressed("MEO") and is_on_floor() and abs(velocity.x) < 10 and not is_attacking and not is_meoing:
+		start_meo()
+	
+	# Cancelar MEO si presionas cualquier otra cosa
+	if is_meoing:
+		if Input.is_action_pressed("LEFT") or Input.is_action_pressed("RIGHT") or \
+		   Input.is_action_pressed("JUMP") or Input.is_action_pressed("ATTACK") or \
+		   Input.is_action_pressed("RUN"):
+			cancel_meo()
+
+func start_meo():
+	is_meoing = true
+	meo_triggered = true
+	
+	if animated_sprite:
+		animated_sprite.play("meo")
+	
+	print("💧 MEO!")
+
+func cancel_meo():
+	is_meoing = false
+	meo_triggered = false
+	
+	print("❌ MEO cancelado")

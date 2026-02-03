@@ -124,4 +124,4 @@ func update_kills():
 	if not kills_label or not spawn_manager:
 		return
 	
-	kills_label.text = "KILLS:" + str(spawn_manager.total_kills) + "/" + str(spawn_manager.kills_needed_for_boss)
+	kills_label.text = str(spawn_manager.total_kills) + "/" + str(spawn_manager.kills_needed_for_boss)
